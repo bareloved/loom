@@ -15,6 +15,7 @@ struct MenuBarView: View {
 
     @State private var selectedTab = 0
     @State private var weeklyStats: [String: TimeInterval] = [:]
+    @State private var accessibilityDismissed = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -104,21 +105,28 @@ struct MenuBarView: View {
 
     @ViewBuilder
     private var todayContent: some View {
-        // Accessibility warning
-        if !accessibilityGranted {
+        // Accessibility warning (dismissable)
+        if !accessibilityGranted && !accessibilityDismissed {
             HStack(spacing: 4) {
                 Image(systemName: "exclamationmark.triangle.fill")
                     .foregroundStyle(.yellow)
-                Text("Grant Accessibility access for window titles")
+                Text("Grant Accessibility for window titles")
                     .font(.caption2)
+                Spacer()
+                Button(action: { accessibilityDismissed = true }) {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 8, weight: .bold))
+                        .foregroundStyle(Theme.textTertiary)
+                }
+                .buttonStyle(.plain)
             }
             .padding(6)
             .background(.yellow.opacity(0.1))
             .clipShape(RoundedRectangle(cornerRadius: 4))
             .onTapGesture {
-                if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
-                    NSWorkspace.shared.open(url)
-                }
+                // Trigger the system accessibility prompt
+                let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue(): true] as CFDictionary
+                AXIsProcessTrustedWithOptions(options)
             }
         }
 
