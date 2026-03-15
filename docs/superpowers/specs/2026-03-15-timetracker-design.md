@@ -28,7 +28,9 @@ Polls every 5 seconds:
 
 Produces raw activity records: `(bundleId, appName, windowTitle, timestamp)`.
 
-Ignores idle time: if the screen is locked or the user is idle for > 5 minutes (detected via `CGEventSourceSecondsSinceLastEventType`), the monitor pauses and the current session is finalized.
+Ignores idle time: if the screen is locked or the user is idle for > 5 minutes, the monitor pauses and the current session is finalized. Idle detection uses `IOKit` (`HIDIdleTime` via `IOServiceGetMatchingService`) — the older `CGEventSourceSecondsSinceLastEventType` still works but is on a deprecation trajectory.
+
+Window titles may be `nil` for some apps (e.g. certain Electron apps or apps without a focused window). The monitor gracefully falls back to app name only when the title is unavailable.
 
 ### 2. Session Engine
 
@@ -63,7 +65,7 @@ Groups raw activities into sessions using two mechanisms:
 }
 ```
 
-`apps` are primary indicators — if the frontmost app is in this list, the activity belongs to this category. `related` apps get absorbed into the current session if that category is already active (e.g. Terminal counts as "Coding" if you were just in Xcode, but as "Other" if you opened it cold).
+`apps` are primary indicators — if the frontmost app is in this list, the activity belongs to this category. `related` apps inherit the category of the **current active session**, but only if that session's category lists the app in its `related` array. Otherwise, the app falls to `default_category`. Example: Terminal is `related` to Coding. If the current session is "Coding" and the user switches to Terminal, it stays "Coding." If the current session is "Email" and the user switches to Terminal, Terminal starts an "Other" session.
 
 **Session grouping logic:**
 - A session starts when a new category is detected
@@ -78,16 +80,18 @@ The config file lives at `~/Library/Application Support/TimeTracker/categories.j
 Uses EventKit framework:
 
 - On first launch, requests calendar access and creates a "Time Tracker" calendar (color: blue)
-- When a new session starts: creates an `EKEvent` with title = category name, notes = list of apps used
+- When a new session starts: creates an `EKEvent` with title = category name, location = primary app name, notes = list of apps used. Initial end time is set to `startTime + 5 minutes` as a crash-safety buffer.
 - While the session is active: updates the event's end time every 30 seconds
 - When a session ends: finalizes the event with the actual end time and full app list
+- On app quit: finalizes the current session before exiting
 - Event structure:
   - **Title:** Category name (e.g. "Coding")
+  - **Location:** Primary app name (shown inline in Calendar.app)
   - **Calendar:** "Time Tracker"
   - **Start/End:** Session timestamps
   - **Notes:** Apps used (e.g. "Xcode, Terminal, Safari")
 
-Uses `EKEventStore` with `requestFullAccessToEvents`. Keeps a reference to the current `EKEvent` to update it in place rather than creating duplicates.
+Uses `EKEventStore` with `requestFullAccessToEvents`. Stores the current event's `eventIdentifier` and re-fetches via `event(withIdentifier:)` before each update, rather than holding a live `EKEvent` reference (which can become stale after `EKEventStoreChanged` notifications). Observes `EKEventStoreChanged` to handle external calendar modifications.
 
 ### 4. Menu Bar UI
 
@@ -105,6 +109,14 @@ SwiftUI `MenuBarExtra` with `.window` style for the detailed dropdown:
 - `@main` App struct with `MenuBarExtra`
 - No `NSApplicationDelegate` dock icon: set `LSUIElement = true` in Info.plist
 - Launch at login: `SMAppService.mainApp.register()`
+
+### Data Flow Contract
+
+The `SessionEngine` is an `@Observable` class (Swift Observation framework). It exposes:
+- `currentSession: Session?` — the active session (observed by Menu Bar UI)
+- `todaySessions: [Session]` — completed sessions today (observed by Menu Bar UI)
+
+It calls `CalendarWriter` methods directly on session start/update/end. The Menu Bar UI observes the engine's properties reactively via SwiftUI.
 
 ### Component Interaction
 
@@ -132,13 +144,17 @@ SwiftUI `MenuBarExtra` with `.window` style for the detailed dropdown:
            └──────────┘
 ```
 
-## Permissions
+## Permissions & Distribution
 
 The app requires two permissions:
-1. **Calendar access** — EventKit (`NSCalendarsFullAccessUsageDescription`)
+1. **Calendar access** — EventKit (`NSCalendarsFullAccessUsageDescription`). Requires `com.apple.security.personal-information.calendars` entitlement in `TimeTracker.entitlements`.
 2. **Accessibility access** — for reading window titles (user must grant in System Settings > Privacy & Security > Accessibility)
 
 If accessibility access is not granted, the app still works but logs only app names, not window titles. The menu bar dropdown shows a subtle warning prompting the user to grant access.
+
+**Sandboxing:** The app runs with Hardened Runtime but **without** App Sandbox. Accessibility API (`AXUIElementCopyAttributeValue`) does not work from a sandboxed app. Since this is a personal tool (not distributed via App Store), this is acceptable. For notarized distribution, the Hardened Runtime is sufficient.
+
+**Limitations:** Stage Manager on macOS 14+ can show multiple windows side-by-side where "frontmost" may not perfectly reflect actual user focus. This is a known limitation — the app tracks whichever app macOS reports as frontmost.
 
 ## Project Structure
 
@@ -160,7 +176,8 @@ TimeTracker/
 │   └── DailySummaryView.swift    # Today's category breakdown
 ├── Resources/
 │   └── default-categories.json   # Default categorization rules
-└── Info.plist
+├── Info.plist
+└── TimeTracker.entitlements
 ```
 
 ## Edge Cases
