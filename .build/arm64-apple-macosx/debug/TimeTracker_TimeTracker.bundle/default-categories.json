@@ -1,0 +1,24 @@
+{
+  "categories": {
+    "Coding": {
+      "apps": ["com.apple.dt.Xcode", "com.microsoft.VSCode", "com.todesktop.230313mzl4w4u92"],
+      "related": ["com.apple.Terminal", "com.googlecode.iterm2", "com.googlechrome.canary"]
+    },
+    "Email": {
+      "apps": ["com.apple.mail", "com.readdle.smartemail.macos"]
+    },
+    "Communication": {
+      "apps": ["com.tinyspeck.slackmacgap", "us.zoom.xos", "com.apple.MobileSMS"]
+    },
+    "Design": {
+      "apps": ["com.figma.Desktop", "com.bohemiancoding.sketch3"]
+    },
+    "Writing": {
+      "apps": ["com.apple.iWork.Pages", "com.microsoft.Word", "md.obsidian"]
+    },
+    "Browsing": {
+      "apps": ["com.apple.Safari", "com.google.Chrome", "org.mozilla.firefox"]
+    }
+  },
+  "default_category": "Other"
+}

@@ -14,6 +14,7 @@ final class AppState {
     @ObservationIgnored @AppStorage("showMenuBarText") var showMenuBarText = true
     @ObservationIgnored @AppStorage("goalCategory") var goalCategory = "Coding"
     @ObservationIgnored @AppStorage("goalHours") var goalHours = 0.0
+    @ObservationIgnored @AppStorage("appearance") var appearance = "system"
     var menuBarTitle: String = "⏱"
     private var menuBarTimer: Timer?
 
@@ -186,6 +187,14 @@ final class AppState {
         SMAppService.mainApp.status == .enabled
     }
 
+    var appearanceScheme: ColorScheme? {
+        switch appearance {
+        case "light": return .light
+        case "dark": return .dark
+        default: return nil
+        }
+    }
+
     private func startMenuBarTimer() {
         updateMenuBarTitle()
         menuBarTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { [weak self] _ in
@@ -235,29 +244,32 @@ struct TimeTrackerApp: App {
 
     var body: some Scene {
         MenuBarExtra {
-            if let engine = appState.sessionEngine {
-                MenuBarView(
-                    sessionEngine: engine,
-                    activityMonitor: appState.activityMonitor,
-                    calendarWriter: appState.calendarWriter,
-                    accessibilityGranted: appState.accessibilityGranted,
-                    launchAtLoginEnabled: appState.launchAtLoginEnabled,
-                    goalCategory: appState.goalCategory,
-                    goalHours: appState.goalHours,
-                    onPauseResume: appState.togglePause,
-                    onOpenSettings: appState.openSettings,
-                    onToggleLaunchAtLogin: appState.toggleLaunchAtLogin,
-                    onQuit: appState.quit
-                )
-            } else {
-                VStack {
-                    Text("Starting up...")
-                        .padding()
-                }
-                .task {
-                    await appState.setup()
+            Group {
+                if let engine = appState.sessionEngine {
+                    MenuBarView(
+                        sessionEngine: engine,
+                        activityMonitor: appState.activityMonitor,
+                        calendarWriter: appState.calendarWriter,
+                        accessibilityGranted: appState.accessibilityGranted,
+                        launchAtLoginEnabled: appState.launchAtLoginEnabled,
+                        goalCategory: appState.goalCategory,
+                        goalHours: appState.goalHours,
+                        onPauseResume: appState.togglePause,
+                        onOpenSettings: appState.openSettings,
+                        onToggleLaunchAtLogin: appState.toggleLaunchAtLogin,
+                        onQuit: appState.quit
+                    )
+                } else {
+                    VStack {
+                        Text("Starting up...")
+                            .padding()
+                    }
+                    .task {
+                        await appState.setup()
+                    }
                 }
             }
+            .preferredColorScheme(appState.appearanceScheme)
         } label: {
             Text(appState.menuBarTitle)
         }

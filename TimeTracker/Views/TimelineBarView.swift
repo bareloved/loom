@@ -10,15 +10,15 @@ struct TimelineBarView: View {
             HStack {
                 Text(startTimeLabel)
                     .font(.system(size: 10))
-                    .foregroundStyle(Color(white: 0.4))
+                    .foregroundStyle(Theme.textQuaternary)
                 Spacer()
                 Text(midTimeLabel)
                     .font(.system(size: 10))
-                    .foregroundStyle(Color(white: 0.4))
+                    .foregroundStyle(Theme.textQuaternary)
                 Spacer()
                 Text("Now")
                     .font(.system(size: 10))
-                    .foregroundStyle(Color(white: 0.4))
+                    .foregroundStyle(Theme.textQuaternary)
             }
 
             // Timeline bar
@@ -61,7 +61,7 @@ struct TimelineBarView: View {
             if gapDuration > 30 {
                 result.append(TimelineSegment(
                     proportion: gapDuration / totalDuration,
-                    color: Color(white: 0.23).opacity(0.4)
+                    color: Theme.idleSegment
                 ))
             }
 

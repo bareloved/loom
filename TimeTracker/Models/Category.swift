@@ -1,13 +1,13 @@
 import Foundation
 
 struct CategoryRule: Codable {
-    let apps: [String]
-    let related: [String]?
+    var apps: [String]
+    var related: [String]?
 }
 
 struct CategoryConfig: Codable {
-    let categories: [String: CategoryRule]
-    let defaultCategory: String
+    var categories: [String: CategoryRule]
+    var defaultCategory: String
 
     enum CodingKeys: String, CodingKey {
         case categories

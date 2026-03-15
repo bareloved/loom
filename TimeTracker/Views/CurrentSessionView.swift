@@ -13,18 +13,20 @@ struct CurrentSessionView: View {
                 .font(.system(size: 36, weight: .bold, design: .default))
                 .monospacedDigit()
                 .kerning(-2)
+                .foregroundStyle(Theme.textPrimary)
 
             // Category + app icons
             HStack(spacing: 6) {
                 Circle()
-                    .fill(.green)
+                    .fill(Color(hex: 0x5a9a6e))
                     .frame(width: 7, height: 7)
 
                 Text(session.category)
                     .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(Theme.textSecondary)
 
                 Text("·")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Theme.textTertiary)
 
                 // App icons
                 ForEach(session.appsUsed.prefix(3), id: \.self) { appName in
@@ -38,7 +40,7 @@ struct CurrentSessionView: View {
 
                 Text(session.appsUsed.joined(separator: ", "))
                     .font(.system(size: 12))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Theme.textTertiary)
                     .lineLimit(1)
             }
         }

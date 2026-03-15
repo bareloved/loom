@@ -1,0 +1,159 @@
+{
+  "": {
+    "swift-dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/master.swiftdeps"
+  },
+  "/Users/bareloved/Github/timetracker/TimeTracker/Models/ActivityRecord.swift": {
+    "dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/ActivityRecord.d",
+    "object": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/ActivityRecord.swift.o",
+    "swiftmodule": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/ActivityRecord~partial.swiftmodule",
+    "swift-dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/ActivityRecord.swiftdeps",
+    "diagnostics": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/ActivityRecord.dia"
+  },
+  "/Users/bareloved/Github/timetracker/TimeTracker/Models/Category.swift": {
+    "dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/Category.d",
+    "object": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/Category.swift.o",
+    "swiftmodule": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/Category~partial.swiftmodule",
+    "swift-dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/Category.swiftdeps",
+    "diagnostics": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/Category.dia"
+  },
+  "/Users/bareloved/Github/timetracker/TimeTracker/Models/CategoryColors.swift": {
+    "dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/CategoryColors.d",
+    "object": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/CategoryColors.swift.o",
+    "swiftmodule": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/CategoryColors~partial.swiftmodule",
+    "swift-dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/CategoryColors.swiftdeps",
+    "diagnostics": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/CategoryColors.dia"
+  },
+  "/Users/bareloved/Github/timetracker/TimeTracker/Models/Session.swift": {
+    "dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/Session.d",
+    "object": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/Session.swift.o",
+    "swiftmodule": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/Session~partial.swiftmodule",
+    "swift-dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/Session.swiftdeps",
+    "diagnostics": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/Session.dia"
+  },
+  "/Users/bareloved/Github/timetracker/TimeTracker/Services/ActivityMonitor.swift": {
+    "dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/ActivityMonitor.d",
+    "object": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/ActivityMonitor.swift.o",
+    "swiftmodule": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/ActivityMonitor~partial.swiftmodule",
+    "swift-dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/ActivityMonitor.swiftdeps",
+    "diagnostics": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/ActivityMonitor.dia"
+  },
+  "/Users/bareloved/Github/timetracker/TimeTracker/Services/AppIconCache.swift": {
+    "dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/AppIconCache.d",
+    "object": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/AppIconCache.swift.o",
+    "swiftmodule": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/AppIconCache~partial.swiftmodule",
+    "swift-dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/AppIconCache.swiftdeps",
+    "diagnostics": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/AppIconCache.dia"
+  },
+  "/Users/bareloved/Github/timetracker/TimeTracker/Services/CalendarWriter.swift": {
+    "dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/CalendarWriter.d",
+    "object": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/CalendarWriter.swift.o",
+    "swiftmodule": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/CalendarWriter~partial.swiftmodule",
+    "swift-dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/CalendarWriter.swiftdeps",
+    "diagnostics": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/CalendarWriter.dia"
+  },
+  "/Users/bareloved/Github/timetracker/TimeTracker/Services/CategoryConfigLoader.swift": {
+    "dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/CategoryConfigLoader.d",
+    "object": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/CategoryConfigLoader.swift.o",
+    "swiftmodule": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/CategoryConfigLoader~partial.swiftmodule",
+    "swift-dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/CategoryConfigLoader.swiftdeps",
+    "diagnostics": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/CategoryConfigLoader.dia"
+  },
+  "/Users/bareloved/Github/timetracker/TimeTracker/Services/HotkeyManager.swift": {
+    "dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/HotkeyManager.d",
+    "object": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/HotkeyManager.swift.o",
+    "swiftmodule": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/HotkeyManager~partial.swiftmodule",
+    "swift-dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/HotkeyManager.swiftdeps",
+    "diagnostics": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/HotkeyManager.dia"
+  },
+  "/Users/bareloved/Github/timetracker/TimeTracker/Services/IdleDetector.swift": {
+    "dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/IdleDetector.d",
+    "object": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/IdleDetector.swift.o",
+    "swiftmodule": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/IdleDetector~partial.swiftmodule",
+    "swift-dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/IdleDetector.swiftdeps",
+    "diagnostics": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/IdleDetector.dia"
+  },
+  "/Users/bareloved/Github/timetracker/TimeTracker/Services/SessionEngine.swift": {
+    "dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/SessionEngine.d",
+    "object": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/SessionEngine.swift.o",
+    "swiftmodule": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/SessionEngine~partial.swiftmodule",
+    "swift-dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/SessionEngine.swiftdeps",
+    "diagnostics": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/SessionEngine.dia"
+  },
+  "/Users/bareloved/Github/timetracker/TimeTracker/TimeTrackerApp.swift": {
+    "dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/TimeTrackerApp.d",
+    "object": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/TimeTrackerApp.swift.o",
+    "swiftmodule": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/TimeTrackerApp~partial.swiftmodule",
+    "swift-dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/TimeTrackerApp.swiftdeps",
+    "diagnostics": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/TimeTrackerApp.dia"
+  },
+  "/Users/bareloved/Github/timetracker/TimeTracker/Views/ActivityPulseView.swift": {
+    "dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/ActivityPulseView.d",
+    "object": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/ActivityPulseView.swift.o",
+    "swiftmodule": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/ActivityPulseView~partial.swiftmodule",
+    "swift-dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/ActivityPulseView.swiftdeps",
+    "diagnostics": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/ActivityPulseView.dia"
+  },
+  "/Users/bareloved/Github/timetracker/TimeTracker/Views/CurrentSessionView.swift": {
+    "dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/CurrentSessionView.d",
+    "object": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/CurrentSessionView.swift.o",
+    "swiftmodule": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/CurrentSessionView~partial.swiftmodule",
+    "swift-dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/CurrentSessionView.swiftdeps",
+    "diagnostics": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/CurrentSessionView.dia"
+  },
+  "/Users/bareloved/Github/timetracker/TimeTracker/Views/DailySummaryView.swift": {
+    "dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/DailySummaryView.d",
+    "object": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/DailySummaryView.swift.o",
+    "swiftmodule": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/DailySummaryView~partial.swiftmodule",
+    "swift-dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/DailySummaryView.swiftdeps",
+    "diagnostics": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/DailySummaryView.dia"
+  },
+  "/Users/bareloved/Github/timetracker/TimeTracker/Views/FocusGoalView.swift": {
+    "dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/FocusGoalView.d",
+    "object": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/FocusGoalView.swift.o",
+    "swiftmodule": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/FocusGoalView~partial.swiftmodule",
+    "swift-dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/FocusGoalView.swiftdeps",
+    "diagnostics": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/FocusGoalView.dia"
+  },
+  "/Users/bareloved/Github/timetracker/TimeTracker/Views/IdleReturnPanel.swift": {
+    "dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/IdleReturnPanel.d",
+    "object": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/IdleReturnPanel.swift.o",
+    "swiftmodule": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/IdleReturnPanel~partial.swiftmodule",
+    "swift-dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/IdleReturnPanel.swiftdeps",
+    "diagnostics": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/IdleReturnPanel.dia"
+  },
+  "/Users/bareloved/Github/timetracker/TimeTracker/Views/MenuBarView.swift": {
+    "dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/MenuBarView.d",
+    "object": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/MenuBarView.swift.o",
+    "swiftmodule": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/MenuBarView~partial.swiftmodule",
+    "swift-dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/MenuBarView.swiftdeps",
+    "diagnostics": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/MenuBarView.dia"
+  },
+  "/Users/bareloved/Github/timetracker/TimeTracker/Views/SettingsView.swift": {
+    "dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/SettingsView.d",
+    "object": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/SettingsView.swift.o",
+    "swiftmodule": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/SettingsView~partial.swiftmodule",
+    "swift-dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/SettingsView.swiftdeps",
+    "diagnostics": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/SettingsView.dia"
+  },
+  "/Users/bareloved/Github/timetracker/TimeTracker/Views/TimelineBarView.swift": {
+    "dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/TimelineBarView.d",
+    "object": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/TimelineBarView.swift.o",
+    "swiftmodule": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/TimelineBarView~partial.swiftmodule",
+    "swift-dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/TimelineBarView.swiftdeps",
+    "diagnostics": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/TimelineBarView.dia"
+  },
+  "/Users/bareloved/Github/timetracker/TimeTracker/Views/WeeklySummaryView.swift": {
+    "dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/WeeklySummaryView.d",
+    "object": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/WeeklySummaryView.swift.o",
+    "swiftmodule": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/WeeklySummaryView~partial.swiftmodule",
+    "swift-dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/WeeklySummaryView.swiftdeps",
+    "diagnostics": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/WeeklySummaryView.dia"
+  },
+  "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/DerivedSources/resource_bundle_accessor.swift": {
+    "dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/resource_bundle_accessor.d",
+    "object": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/resource_bundle_accessor.swift.o",
+    "swiftmodule": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/resource_bundle_accessor~partial.swiftmodule",
+    "swift-dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/resource_bundle_accessor.swiftdeps",
+    "diagnostics": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTracker.build/resource_bundle_accessor.dia"
+  }
+}

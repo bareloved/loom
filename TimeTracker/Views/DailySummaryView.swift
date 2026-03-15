@@ -17,7 +17,7 @@ struct DailySummaryView: View {
 
                     GeometryReader { geo in
                         RoundedRectangle(cornerRadius: 2)
-                            .fill(Color(white: 0.17))
+                            .fill(Theme.trackFill)
                             .frame(width: geo.size.width, height: 4)
                             .overlay(alignment: .leading) {
                                 RoundedRectangle(cornerRadius: 2)
@@ -29,7 +29,7 @@ struct DailySummaryView: View {
 
                     Text(summary.formattedDuration)
                         .font(.system(size: 11))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Theme.textTertiary)
                         .monospacedDigit()
                         .frame(width: 48, alignment: .trailing)
                 }

@@ -18,15 +18,16 @@ struct IdleReturnView: View {
                     .font(.system(size: 20))
                 Text("Welcome back!")
                     .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(Theme.textPrimary)
                 Text("You were away for \(formattedDuration)")
                     .font(.system(size: 11))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Theme.textSecondary)
             }
 
             // Presets
             Text("What were you doing?")
                 .font(.system(size: 11))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Theme.textSecondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             VStack(spacing: 4) {
@@ -38,7 +39,7 @@ struct IdleReturnView: View {
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
                         .padding(8)
-                        .background(Color(white: 0.17))
+                        .background(Theme.trackFill)
                         .clipShape(RoundedRectangle(cornerRadius: 6))
                     }
                     .buttonStyle(.plain)
@@ -64,7 +65,7 @@ struct IdleReturnView: View {
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
                         .padding(8)
-                        .background(Color(white: 0.17))
+                        .background(Theme.trackFill)
                         .clipShape(RoundedRectangle(cornerRadius: 6))
                     }
                     .buttonStyle(.plain)
@@ -76,7 +77,7 @@ struct IdleReturnView: View {
                 onSkip()
             }
             .font(.system(size: 10))
-            .foregroundStyle(Color(white: 0.4))
+            .foregroundStyle(Theme.textTertiary)
             .buttonStyle(.plain)
         }
         .padding(16)

@@ -10,6 +10,7 @@ struct SettingsView: View {
     @AppStorage("showMenuBarText") private var showMenuBarText = true
     @AppStorage("goalCategory") private var goalCategory = "Coding"
     @AppStorage("goalHours") private var goalHours = 0.0
+    @AppStorage("appearance") private var appearance = "system"
 
     let onSave: (CategoryConfig) -> Void
 
@@ -44,6 +45,15 @@ struct SettingsView: View {
         Form {
             Section("Menu Bar") {
                 Toggle("Show timer in menu bar", isOn: $showMenuBarText)
+            }
+
+            Section("Appearance") {
+                Picker("Theme", selection: $appearance) {
+                    Text("Light").tag("light")
+                    Text("Dark").tag("dark")
+                    Text("System").tag("system")
+                }
+                .pickerStyle(.segmented)
             }
 
             Section("Focus Goal") {

@@ -45,6 +45,19 @@ enum CategoryConfigLoader {
         return defaultConfig
     }
 
+    static func save(_ config: CategoryConfig, to url: URL? = nil) throws {
+        let target = url ?? defaultConfigPath
+        let dir = target.deletingLastPathComponent()
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+
+        let data = try JSONEncoder().encode(config)
+        let pretty = try JSONSerialization.data(
+            withJSONObject: try JSONSerialization.jsonObject(with: data),
+            options: [.prettyPrinted, .sortedKeys]
+        )
+        try pretty.write(to: target)
+    }
+
     enum ConfigError: Error {
         case bundledConfigNotFound
     }

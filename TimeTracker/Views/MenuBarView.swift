@@ -28,14 +28,14 @@ struct MenuBarView: View {
                 HStack(spacing: 4) {
                     Text("⌥⇧T")
                         .font(.system(size: 10))
-                        .foregroundStyle(Color(white: 0.4))
+                        .foregroundStyle(Theme.textTertiary)
                     Text(activityMonitor.isPaused ? "Resume" : "Pause")
                         .font(.system(size: 9))
                         .padding(.horizontal, 5)
                         .padding(.vertical, 1)
-                        .background(Color(white: 0.17))
+                        .background(Theme.backgroundSecondary)
                         .clipShape(RoundedRectangle(cornerRadius: 3))
-                        .foregroundStyle(Color(white: 0.56))
+                        .foregroundStyle(Theme.textTertiary)
                 }
             }
             .padding(.horizontal, 12)
@@ -77,7 +77,7 @@ struct MenuBarView: View {
 
                 Text("⌥⇧T")
                     .font(.system(size: 10))
-                    .foregroundStyle(Color(white: 0.4))
+                    .foregroundStyle(Theme.textTertiary)
 
                 Divider()
                     .frame(height: 12)
@@ -170,7 +170,7 @@ struct MenuBarView: View {
                     .padding(.vertical, 10)
 
                 Rectangle()
-                    .fill(selectedTab == index ? Color(red: 0.369, green: 0.361, blue: 0.902) : .clear)
+                    .fill(selectedTab == index ? CategoryColors.accent : .clear)
                     .frame(height: 2)
             }
         }

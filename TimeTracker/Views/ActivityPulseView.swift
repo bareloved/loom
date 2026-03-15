@@ -51,7 +51,7 @@ struct ActivityPulseView: View {
 
             result.append(PulseSlot(
                 fillRatio: min(1.0, totalActive / slotDuration),
-                color: totalActive > 0 ? CategoryColors.color(for: dominant) : Color(white: 0.2)
+                color: totalActive > 0 ? CategoryColors.color(for: dominant) : Theme.trackFill
             ))
 
             slotStart = slotEnd

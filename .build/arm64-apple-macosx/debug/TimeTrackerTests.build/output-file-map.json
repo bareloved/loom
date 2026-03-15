@@ -1,0 +1,40 @@
+{
+  "": {
+    "swift-dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTrackerTests.build/master.swiftdeps"
+  },
+  "/Users/bareloved/Github/timetracker/TimeTrackerTests/CategoryColorsTests.swift": {
+    "dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTrackerTests.build/CategoryColorsTests.d",
+    "object": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTrackerTests.build/CategoryColorsTests.swift.o",
+    "swiftmodule": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTrackerTests.build/CategoryColorsTests~partial.swiftmodule",
+    "swift-dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTrackerTests.build/CategoryColorsTests.swiftdeps",
+    "diagnostics": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTrackerTests.build/CategoryColorsTests.dia"
+  },
+  "/Users/bareloved/Github/timetracker/TimeTrackerTests/CategoryConfigLoaderTests.swift": {
+    "dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTrackerTests.build/CategoryConfigLoaderTests.d",
+    "object": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTrackerTests.build/CategoryConfigLoaderTests.swift.o",
+    "swiftmodule": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTrackerTests.build/CategoryConfigLoaderTests~partial.swiftmodule",
+    "swift-dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTrackerTests.build/CategoryConfigLoaderTests.swiftdeps",
+    "diagnostics": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTrackerTests.build/CategoryConfigLoaderTests.dia"
+  },
+  "/Users/bareloved/Github/timetracker/TimeTrackerTests/CategoryTests.swift": {
+    "dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTrackerTests.build/CategoryTests.d",
+    "object": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTrackerTests.build/CategoryTests.swift.o",
+    "swiftmodule": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTrackerTests.build/CategoryTests~partial.swiftmodule",
+    "swift-dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTrackerTests.build/CategoryTests.swiftdeps",
+    "diagnostics": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTrackerTests.build/CategoryTests.dia"
+  },
+  "/Users/bareloved/Github/timetracker/TimeTrackerTests/SessionEngineTests.swift": {
+    "dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTrackerTests.build/SessionEngineTests.d",
+    "object": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTrackerTests.build/SessionEngineTests.swift.o",
+    "swiftmodule": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTrackerTests.build/SessionEngineTests~partial.swiftmodule",
+    "swift-dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTrackerTests.build/SessionEngineTests.swiftdeps",
+    "diagnostics": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTrackerTests.build/SessionEngineTests.dia"
+  },
+  "/Users/bareloved/Github/timetracker/TimeTrackerTests/SessionTests.swift": {
+    "dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTrackerTests.build/SessionTests.d",
+    "object": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTrackerTests.build/SessionTests.swift.o",
+    "swiftmodule": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTrackerTests.build/SessionTests~partial.swiftmodule",
+    "swift-dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTrackerTests.build/SessionTests.swiftdeps",
+    "diagnostics": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/debug/TimeTrackerTests.build/SessionTests.dia"
+  }
+}

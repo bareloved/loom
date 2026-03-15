@@ -1,0 +1,13 @@
+{
+  "": {
+    "dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/release/TimeTrackerPackageTests.build/TimeTrackerPackageTests.d",
+    "object": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/release/TimeTrackerPackageTests.build/TimeTrackerPackageTests.o",
+    "swift-dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/release/TimeTrackerPackageTests.build/master.swiftdeps"
+  },
+  "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/release/TimeTrackerPackageTests.derived/runner.swift": {
+    "object": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/release/TimeTrackerPackageTests.build/runner.swift.o",
+    "swiftmodule": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/release/TimeTrackerPackageTests.build/runner~partial.swiftmodule",
+    "swift-dependencies": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/release/TimeTrackerPackageTests.build/runner.swiftdeps",
+    "diagnostics": "/Users/bareloved/Github/timetracker/.build/arm64-apple-macosx/release/TimeTrackerPackageTests.build/runner.dia"
+  }
+}
