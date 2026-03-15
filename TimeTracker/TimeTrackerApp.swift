@@ -8,9 +8,7 @@ final class AppState {
     var activityMonitor = ActivityMonitor()
     var sessionEngine: SessionEngine?
     var isReady = false
-    var accessibilityGranted: Bool {
-        AXIsProcessTrusted()
-    }
+    var accessibilityGranted = false
     var hotkeyManager = HotkeyManager()
     var idleReturnController = IdleReturnPanelController()
     @ObservationIgnored @AppStorage("showMenuBarText") var showMenuBarText = true
@@ -33,6 +31,8 @@ final class AppState {
             print("Failed to load config: \(error)")
             return
         }
+
+        accessibilityGranted = AXIsProcessTrusted()
 
         let engine = SessionEngine(config: config, calendarWriter: calendarWriter)
         self.sessionEngine = engine
@@ -191,9 +191,11 @@ final class AppState {
 
     private func startMenuBarTimer() {
         updateMenuBarTitle()
+        accessibilityGranted = AXIsProcessTrusted()
         menuBarTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { [weak self] _ in
             MainActor.assumeIsolated {
                 self?.updateMenuBarTitle()
+                self?.accessibilityGranted = AXIsProcessTrusted()
             }
         }
     }
