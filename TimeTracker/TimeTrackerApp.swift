@@ -14,7 +14,7 @@ final class AppState {
     @ObservationIgnored @AppStorage("showMenuBarText") var showMenuBarText = true
     @ObservationIgnored @AppStorage("goalCategory") var goalCategory = "Coding"
     @ObservationIgnored @AppStorage("goalHours") var goalHours = 0.0
-    @ObservationIgnored @AppStorage("appearance") var appearance = "system"
+    // appearance is read via @AppStorage in TimeTrackerApp struct directly
     var menuBarTitle: String = "⏱"
     private var menuBarTimer: Timer?
 
@@ -187,13 +187,7 @@ final class AppState {
         SMAppService.mainApp.status == .enabled
     }
 
-    var appearanceScheme: ColorScheme? {
-        switch appearance {
-        case "light": return .light
-        case "dark": return .dark
-        default: return nil
-        }
-    }
+    // appearanceScheme moved to TimeTrackerApp struct
 
     private func startMenuBarTimer() {
         updateMenuBarTitle()
@@ -241,6 +235,15 @@ final class AppState {
 @main
 struct TimeTrackerApp: App {
     @State private var appState = AppState()
+    @AppStorage("appearance") private var appearance = "system"
+
+    private var appearanceScheme: ColorScheme? {
+        switch appearance {
+        case "light": return .light
+        case "dark": return .dark
+        default: return nil
+        }
+    }
 
     var body: some Scene {
         MenuBarExtra {
@@ -269,7 +272,7 @@ struct TimeTrackerApp: App {
                     }
                 }
             }
-            .preferredColorScheme(appState.appearanceScheme)
+            .preferredColorScheme(appearanceScheme)
         } label: {
             Text(appState.menuBarTitle)
         }
