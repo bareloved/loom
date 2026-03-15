@@ -44,6 +44,7 @@ struct CurrentSessionView: View {
                     .lineLimit(1)
             }
         }
+        .frame(maxWidth: .infinity)
         .onReceive(timer) { self.now = $0 }
     }
 

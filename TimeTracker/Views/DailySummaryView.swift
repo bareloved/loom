@@ -15,17 +15,15 @@ struct DailySummaryView: View {
                     Text(summary.category)
                         .font(.system(size: 12))
 
-                    GeometryReader { geo in
+                    ZStack(alignment: .leading) {
                         RoundedRectangle(cornerRadius: 2)
                             .fill(Theme.trackFill)
-                            .frame(width: geo.size.width, height: 4)
-                            .overlay(alignment: .leading) {
-                                RoundedRectangle(cornerRadius: 2)
-                                    .fill(CategoryColors.color(for: summary.category))
-                                    .frame(width: geo.size.width * summary.proportion, height: 4)
-                            }
+                            .frame(height: 4)
+                        RoundedRectangle(cornerRadius: 2)
+                            .fill(CategoryColors.color(for: summary.category))
+                            .frame(width: max(2, 80 * summary.proportion), height: 4)
                     }
-                    .frame(height: 4)
+                    .frame(width: 80, height: 4)
 
                     Text(summary.formattedDuration)
                         .font(.system(size: 11))

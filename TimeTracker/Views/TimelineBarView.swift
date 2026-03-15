@@ -21,17 +21,17 @@ struct TimelineBarView: View {
                     .foregroundStyle(Theme.textQuaternary)
             }
 
-            // Timeline bar
-            GeometryReader { geo in
-                HStack(spacing: 1) {
-                    ForEach(Array(segments.enumerated()), id: \.offset) { _, segment in
-                        RoundedRectangle(cornerRadius: 2)
-                            .fill(segment.color)
-                            .frame(width: max(2, geo.size.width * segment.proportion))
-                    }
+            // Timeline bar — proportional segments via flexible frames
+            HStack(spacing: 1) {
+                ForEach(Array(segments.enumerated()), id: \.offset) { _, segment in
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(segment.color)
+                        .frame(minWidth: 2)
+                        .frame(idealWidth: CGFloat(segment.proportion * 300), maxWidth: .infinity)
                 }
             }
             .frame(height: 14)
+            .frame(maxWidth: .infinity)
             .clipShape(RoundedRectangle(cornerRadius: 4))
         }
     }

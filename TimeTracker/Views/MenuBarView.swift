@@ -56,6 +56,7 @@ struct MenuBarView: View {
                     )
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .padding(14)
 
             // Bottom controls
