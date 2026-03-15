@@ -3,6 +3,7 @@ import Foundation
 @testable import TimeTracker
 
 @Suite("Session Engine")
+@MainActor
 struct SessionEngineTests {
 
     static let config: CategoryConfig = {

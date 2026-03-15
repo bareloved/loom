@@ -3,6 +3,7 @@ import Foundation
 import AppKit
 
 @Observable
+@MainActor
 final class CalendarWriter {
 
     private let eventStore = EKEventStore()
@@ -125,12 +126,14 @@ final class CalendarWriter {
     private func startUpdateTimer() {
         stopUpdateTimer()
         updateTimer = Timer.scheduledTimer(withTimeInterval: 30, repeats: true) { [weak self] _ in
-            guard let self,
-                  let identifier = self.currentEventIdentifier,
-                  let event = self.eventStore.event(withIdentifier: identifier) else { return }
+            MainActor.assumeIsolated {
+                guard let self,
+                      let identifier = self.currentEventIdentifier,
+                      let event = self.eventStore.event(withIdentifier: identifier) else { return }
 
-            event.endDate = Date()
-            try? self.eventStore.save(event, span: .thisEvent)
+                event.endDate = Date()
+                try? self.eventStore.save(event, span: .thisEvent)
+            }
         }
     }
 
@@ -147,7 +150,9 @@ final class CalendarWriter {
             object: eventStore,
             queue: .main
         ) { [weak self] _ in
-            self?.ensureCalendarExists()
+            MainActor.assumeIsolated {
+                self?.ensureCalendarExists()
+            }
         }
     }
 }

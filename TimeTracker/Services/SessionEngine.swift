@@ -1,6 +1,7 @@
 import Foundation
 
 @Observable
+@MainActor
 final class SessionEngine {
 
     private(set) var currentSession: Session?

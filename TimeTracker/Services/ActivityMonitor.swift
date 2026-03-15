@@ -2,6 +2,7 @@ import AppKit
 import ApplicationServices
 
 @Observable
+@MainActor
 final class ActivityMonitor {
 
     private(set) var latestActivity: ActivityRecord?
@@ -21,7 +22,9 @@ final class ActivityMonitor {
         isPaused = false
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: pollInterval, repeats: true) { [weak self] _ in
-            self?.poll()
+            MainActor.assumeIsolated {
+                self?.poll()
+            }
         }
         poll()
     }
