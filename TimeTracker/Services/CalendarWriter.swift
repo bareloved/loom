@@ -121,6 +121,41 @@ final class CalendarWriter {
         currentEventIdentifier = nil
     }
 
+    // MARK: - Weekly Stats
+
+    func weeklyStats() async -> [String: TimeInterval] {
+        let calendar = Calendar.current
+        let now = Date()
+
+        // Find this week's Monday at 00:00
+        var comps = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: now)
+        comps.weekday = 2 // Monday
+        guard let monday = calendar.date(from: comps) else { return [:] }
+
+        // End at today's start (today's data comes from SessionEngine)
+        let todayStart = calendar.startOfDay(for: now)
+
+        guard let tracker = timeTrackerCalendar else { return [:] }
+
+        let predicate = eventStore.predicateForEvents(
+            withStart: monday,
+            end: todayStart,
+            calendars: [tracker]
+        )
+
+        let events = eventStore.events(matching: predicate)
+        var totals: [String: TimeInterval] = [:]
+
+        for event in events {
+            let duration = event.endDate.timeIntervalSince(event.startDate)
+            if duration > 0 {
+                totals[event.title, default: 0] += duration
+            }
+        }
+
+        return totals
+    }
+
     // MARK: - Periodic Update Timer
 
     private func startUpdateTimer() {
