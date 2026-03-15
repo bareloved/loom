@@ -1,8 +1,153 @@
+import EventKit
 import Foundation
+import AppKit
 
 @Observable
 final class CalendarWriter {
-    func createEvent(for session: Session) {}
-    func updateCurrentEvent(session: Session) {}
-    func finalizeEvent(for session: Session) {}
+
+    private let eventStore = EKEventStore()
+    private var timeTrackerCalendar: EKCalendar?
+    private var currentEventIdentifier: String?
+    private var updateTimer: Timer?
+    private(set) var isAuthorized = false
+
+    private let calendarName = "Time Tracker"
+
+    init() {
+        observeStoreChanges()
+    }
+
+    // MARK: - Authorization
+
+    func requestAccess() async -> Bool {
+        do {
+            let granted = try await eventStore.requestFullAccessToEvents()
+            isAuthorized = granted
+            if granted {
+                ensureCalendarExists()
+            }
+            return granted
+        } catch {
+            print("Calendar access error: \(error)")
+            return false
+        }
+    }
+
+    // MARK: - Calendar Management
+
+    private func ensureCalendarExists() {
+        let calendars = eventStore.calendars(for: .event)
+        if let existing = calendars.first(where: { $0.title == calendarName }) {
+            timeTrackerCalendar = existing
+            return
+        }
+
+        let calendar = EKCalendar(for: .event, eventStore: eventStore)
+        calendar.title = calendarName
+        calendar.cgColor = NSColor.systemBlue.cgColor
+
+        if let source = eventStore.defaultCalendarForNewEvents?.source {
+            calendar.source = source
+        } else if let source = eventStore.sources.first(where: { $0.sourceType == .local }) {
+            calendar.source = source
+        }
+
+        do {
+            try eventStore.saveCalendar(calendar, commit: true)
+            timeTrackerCalendar = calendar
+        } catch {
+            print("Failed to create calendar: \(error)")
+        }
+    }
+
+    // MARK: - Event Management
+
+    func createEvent(for session: Session) {
+        ensureCalendarExists()
+        guard let calendar = timeTrackerCalendar else { return }
+
+        let event = EKEvent(eventStore: eventStore)
+        event.title = session.category
+        event.location = session.primaryApp
+        event.notes = "Apps: \(session.appsUsed.joined(separator: ", "))"
+        event.startDate = session.startTime
+        event.endDate = session.startTime.addingTimeInterval(300)
+        event.calendar = calendar
+
+        do {
+            try eventStore.save(event, span: .thisEvent)
+            currentEventIdentifier = event.eventIdentifier
+            startUpdateTimer()
+        } catch {
+            print("Failed to create event: \(error)")
+        }
+    }
+
+    func updateCurrentEvent(session: Session) {
+        guard let identifier = currentEventIdentifier,
+              let event = eventStore.event(withIdentifier: identifier) else { return }
+
+        event.endDate = Date()
+        event.notes = "Apps: \(session.appsUsed.joined(separator: ", "))"
+        event.location = session.primaryApp
+
+        do {
+            try eventStore.save(event, span: .thisEvent)
+        } catch {
+            print("Failed to update event: \(error)")
+        }
+    }
+
+    func finalizeEvent(for session: Session) {
+        stopUpdateTimer()
+
+        guard let identifier = currentEventIdentifier,
+              let event = eventStore.event(withIdentifier: identifier) else {
+            currentEventIdentifier = nil
+            return
+        }
+
+        event.endDate = session.endTime ?? Date()
+        event.notes = "Apps: \(session.appsUsed.joined(separator: ", "))"
+        event.location = session.primaryApp
+
+        do {
+            try eventStore.save(event, span: .thisEvent)
+        } catch {
+            print("Failed to finalize event: \(error)")
+        }
+
+        currentEventIdentifier = nil
+    }
+
+    // MARK: - Periodic Update Timer
+
+    private func startUpdateTimer() {
+        stopUpdateTimer()
+        updateTimer = Timer.scheduledTimer(withTimeInterval: 30, repeats: true) { [weak self] _ in
+            guard let self,
+                  let identifier = self.currentEventIdentifier,
+                  let event = self.eventStore.event(withIdentifier: identifier) else { return }
+
+            event.endDate = Date()
+            try? self.eventStore.save(event, span: .thisEvent)
+        }
+    }
+
+    private func stopUpdateTimer() {
+        updateTimer?.invalidate()
+        updateTimer = nil
+    }
+
+    // MARK: - Store Change Observation
+
+    private func observeStoreChanges() {
+        NotificationCenter.default.addObserver(
+            forName: .EKEventStoreChanged,
+            object: eventStore,
+            queue: .main
+        ) { [weak self] _ in
+            self?.ensureCalendarExists()
+        }
+    }
 }
