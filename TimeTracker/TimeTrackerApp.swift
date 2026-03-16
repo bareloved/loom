@@ -91,7 +91,8 @@ final class AppState {
     // MARK: - Main Window (stub)
 
     func openMainWindow() {
-        // Will be implemented in a later chunk
+        NSApp.setActivationPolicy(.regular)
+        NSApp.activate(ignoringOtherApps: true)
     }
 
     // MARK: - Config
@@ -335,5 +336,11 @@ struct TimeTrackerApp: App {
             Text(appState.menuBarTitle)
         }
         .menuBarExtraStyle(.window)
+
+        Window("TimeTracker", id: "main") {
+            MainWindowView(appState: appState)
+                .preferredColorScheme(appearanceScheme)
+        }
+        .defaultSize(width: 500, height: 700)
     }
 }
