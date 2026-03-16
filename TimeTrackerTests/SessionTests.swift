@@ -53,4 +53,52 @@ struct SessionTests {
         )
         #expect(session.primaryApp == "Xcode")
     }
+
+    @Test("Session stores intention and tracking span")
+    func intentionAndSpan() {
+        let spanId = UUID()
+        let session = Session(
+            category: "Coding",
+            startTime: Date(),
+            appsUsed: ["Xcode"],
+            intention: "Build feature X",
+            trackingSpanId: spanId
+        )
+        #expect(session.intention == "Build feature X")
+        #expect(session.trackingSpanId == spanId)
+    }
+
+    @Test("Session defaults intention and span to nil")
+    func defaultsAreNil() {
+        let session = Session(
+            category: "Coding",
+            startTime: Date(),
+            appsUsed: ["Xcode"]
+        )
+        #expect(session.intention == nil)
+        #expect(session.trackingSpanId == nil)
+    }
+
+    @Test("Category is mutable")
+    func categoryMutable() {
+        var session = Session(
+            category: "Coding",
+            startTime: Date(),
+            appsUsed: ["Xcode"]
+        )
+        session.category = "Email"
+        #expect(session.category == "Email")
+    }
+
+    @Test("Custom ID is preserved")
+    func customId() {
+        let id = UUID()
+        let session = Session(
+            id: id,
+            category: "Coding",
+            startTime: Date(),
+            appsUsed: ["Xcode"]
+        )
+        #expect(session.id == id)
+    }
 }

@@ -60,4 +60,64 @@ struct CategoryTests {
         #expect(config.isRelated(bundleId: "com.apple.Terminal", toCategory: "Email") == false)
         #expect(config.isRelated(bundleId: "com.apple.mail", toCategory: "Coding") == false)
     }
+
+    @Test("URL patterns match and categorize browser pages")
+    func urlPatternMatching() throws {
+        let json = """
+        {
+          "categories": {
+            "Coding": {
+              "apps": ["com.apple.dt.Xcode"],
+              "urlPatterns": ["github.com", "stackoverflow.com"]
+            },
+            "Social": {
+              "apps": [],
+              "urlPatterns": ["twitter.com", "reddit.com"]
+            }
+          },
+          "default_category": "Other"
+        }
+        """.data(using: .utf8)!
+
+        let config = try JSONDecoder().decode(CategoryConfig.self, from: json)
+
+        // URL pattern should match for a browser bundle
+        let result = config.resolve(
+            bundleId: "com.apple.Safari",
+            currentCategory: nil,
+            pageURL: "https://github.com/user/repo"
+        )
+        #expect(result == "Coding")
+
+        // Different URL pattern
+        let social = config.resolve(
+            bundleId: "com.apple.Safari",
+            currentCategory: nil,
+            pageURL: "https://twitter.com/home"
+        )
+        #expect(social == "Social")
+
+        // No matching URL -> default
+        let other = config.resolve(
+            bundleId: "com.apple.Safari",
+            currentCategory: nil,
+            pageURL: "https://example.com"
+        )
+        #expect(other == "Other")
+
+        // No URL provided -> default
+        let noUrl = config.resolve(
+            bundleId: "com.apple.Safari",
+            currentCategory: nil
+        )
+        #expect(noUrl == "Other")
+    }
+
+    @Test("URL patterns decode as optional")
+    func urlPatternsOptional() throws {
+        // Original JSON without urlPatterns should still decode fine
+        let config = try JSONDecoder().decode(CategoryConfig.self, from: sampleJSON)
+        #expect(config.categories["Coding"]?.urlPatterns == nil)
+        #expect(config.categories["Email"]?.urlPatterns == nil)
+    }
 }

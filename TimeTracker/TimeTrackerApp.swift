@@ -5,6 +5,7 @@ import ServiceManagement
 @MainActor
 final class AppState {
     var calendarWriter = CalendarWriter()
+    var calendarReader: CalendarReader?
     var activityMonitor = ActivityMonitor()
     var sessionEngine: SessionEngine?
     var isReady = false
@@ -23,6 +24,9 @@ final class AppState {
         if !granted {
             print("Calendar access not granted")
         }
+
+        // Init calendar reader with shared event store
+        calendarReader = CalendarReader(eventStore: calendarWriter.sharedEventStore)
 
         let config: CategoryConfig
         do {
@@ -43,7 +47,7 @@ final class AppState {
         activityMonitor.onIdle = { [weak engine] in
             engine?.handleIdle(at: Date())
         }
-        activityMonitor.start()
+        // Do NOT start monitor here — it starts when the user starts tracking
 
         // Hotkey
         hotkeyManager.onToggle = { [weak self] in
@@ -72,6 +76,49 @@ final class AppState {
         isReady = true
     }
 
+    // MARK: - Start/Stop Tracking
+
+    func startTracking(intention: String? = nil) {
+        sessionEngine?.startSession(intention: intention)
+        activityMonitor.start()
+    }
+
+    func stopTracking() {
+        sessionEngine?.stopSession()
+        activityMonitor.stop()
+    }
+
+    // MARK: - Main Window (stub)
+
+    func openMainWindow() {
+        // Will be implemented in a later chunk
+    }
+
+    // MARK: - Config
+
+    func saveConfig(_ newConfig: CategoryConfig) {
+        do {
+            try CategoryConfigLoader.save(newConfig)
+            // Rebuild engine with new config
+            let wasTracking = sessionEngine?.isTracking ?? false
+            let engine = SessionEngine(config: newConfig, calendarWriter: calendarWriter)
+            self.sessionEngine = engine
+            self.activityMonitor.onActivity = { [weak engine] record in
+                engine?.process(record)
+            }
+            self.activityMonitor.onIdle = { [weak engine] in
+                engine?.handleIdle(at: Date())
+            }
+            if wasTracking {
+                engine.startSession()
+            }
+        } catch {
+            print("Failed to save config: \(error)")
+        }
+    }
+
+    // MARK: - Sleep/Wake & Termination
+
     private func setupSleepWakeHandlers(engine: SessionEngine) {
         NSWorkspace.shared.notificationCenter.addObserver(
             forName: NSWorkspace.willSleepNotification,
@@ -79,8 +126,9 @@ final class AppState {
             queue: .main
         ) { [weak self] _ in
             MainActor.assumeIsolated {
+                guard let self, self.sessionEngine?.isTracking == true else { return }
                 engine.handleIdle(at: Date())
-                self?.activityMonitor.pause()
+                self.activityMonitor.pause()
             }
         }
 
@@ -90,7 +138,8 @@ final class AppState {
             queue: .main
         ) { [weak self] _ in
             MainActor.assumeIsolated {
-                self?.activityMonitor.resume()
+                guard let self, self.sessionEngine?.isTracking == true else { return }
+                self.activityMonitor.resume()
             }
         }
     }
@@ -102,7 +151,9 @@ final class AppState {
             queue: .main
         ) { _ in
             MainActor.assumeIsolated {
-                engine.finalizeCurrentSession()
+                if engine.isTracking {
+                    engine.stopSession()
+                }
             }
         }
     }
@@ -135,21 +186,7 @@ final class AppState {
         }
 
         let settingsView = SettingsView(config: currentConfig) { [weak self] newConfig in
-            do {
-                try CategoryConfigLoader.save(newConfig)
-                // Rebuild engine with new config
-                guard let self else { return }
-                let engine = SessionEngine(config: newConfig, calendarWriter: self.calendarWriter)
-                self.sessionEngine = engine
-                self.activityMonitor.onActivity = { [weak engine] record in
-                    engine?.process(record)
-                }
-                self.activityMonitor.onIdle = { [weak engine] in
-                    engine?.handleIdle(at: Date())
-                }
-            } catch {
-                print("Failed to save config: \(error)")
-            }
+            self?.saveConfig(newConfig)
         }
 
         let window = NSWindow(
@@ -167,7 +204,9 @@ final class AppState {
     }
 
     func quit() {
-        sessionEngine?.finalizeCurrentSession()
+        if sessionEngine?.isTracking == true {
+            sessionEngine?.stopSession()
+        }
         NSApplication.shared.terminate(nil)
     }
 

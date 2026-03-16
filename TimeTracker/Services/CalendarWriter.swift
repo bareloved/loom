@@ -14,6 +14,8 @@ final class CalendarWriter {
 
     private let calendarName = "Time Tracker"
 
+    var sharedEventStore: EKEventStore { eventStore }
+
     init() {
         observeStoreChanges()
     }
@@ -61,6 +63,25 @@ final class CalendarWriter {
         }
     }
 
+    // MARK: - Notes Builder
+
+    private static func buildNotes(session: Session) -> String {
+        var dict: [String: Any] = [
+            "apps": session.appsUsed
+        ]
+        if let intention = session.intention {
+            dict["intention"] = intention
+        }
+        if let spanId = session.trackingSpanId {
+            dict["spanId"] = spanId.uuidString
+        }
+        guard let data = try? JSONSerialization.data(withJSONObject: dict, options: [.sortedKeys]),
+              let json = String(data: data, encoding: .utf8) else {
+            return "Apps: \(session.appsUsed.joined(separator: ", "))"
+        }
+        return json
+    }
+
     // MARK: - Event Management
 
     func createEvent(for session: Session) {
@@ -70,7 +91,7 @@ final class CalendarWriter {
         let event = EKEvent(eventStore: eventStore)
         event.title = session.category
         event.location = session.primaryApp
-        event.notes = "Apps: \(session.appsUsed.joined(separator: ", "))"
+        event.notes = Self.buildNotes(session: session)
         event.startDate = session.startTime
         event.endDate = session.startTime.addingTimeInterval(300)
         event.calendar = calendar
@@ -89,7 +110,7 @@ final class CalendarWriter {
               let event = eventStore.event(withIdentifier: identifier) else { return }
 
         event.endDate = Date()
-        event.notes = "Apps: \(session.appsUsed.joined(separator: ", "))"
+        event.notes = Self.buildNotes(session: session)
         event.location = session.primaryApp
 
         do {
@@ -109,7 +130,7 @@ final class CalendarWriter {
         }
 
         event.endDate = session.endTime ?? Date()
-        event.notes = "Apps: \(session.appsUsed.joined(separator: ", "))"
+        event.notes = Self.buildNotes(session: session)
         event.location = session.primaryApp
 
         do {

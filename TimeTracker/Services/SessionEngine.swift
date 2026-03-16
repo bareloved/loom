@@ -6,6 +6,8 @@ final class SessionEngine {
 
     private(set) var currentSession: Session?
     private(set) var todaySessions: [Session] = []
+    private(set) var isTracking = false
+    private(set) var currentSpanId: UUID?
 
     private let config: CategoryConfig
     private let calendarWriter: CalendarWriter?
@@ -13,6 +15,7 @@ final class SessionEngine {
     private var tentativeCategory: String?
     private var tentativeSwitchTime: Date?
     private var lastActivityTime: Date?
+    private var currentIntention: String?
 
     private let shortSwitchThreshold: TimeInterval = 120  // 2 minutes
     private let resumeThreshold: TimeInterval = 300       // 5 minutes
@@ -22,10 +25,29 @@ final class SessionEngine {
         self.calendarWriter = calendarWriter
     }
 
+    func startSession(intention: String? = nil) {
+        isTracking = true
+        currentSpanId = UUID()
+        currentIntention = intention
+    }
+
+    func stopSession() {
+        finalizeCurrentSession()
+        isTracking = false
+        currentSpanId = nil
+        currentIntention = nil
+        tentativeCategory = nil
+        tentativeSwitchTime = nil
+        lastActivityTime = nil
+    }
+
     func process(_ record: ActivityRecord) {
+        guard isTracking else { return }
+
         let category = config.resolve(
             bundleId: record.bundleId,
-            currentCategory: currentSession?.category
+            currentCategory: currentSession?.category,
+            pageURL: record.pageURL
         )
         let previousActivityTime = lastActivityTime
         lastActivityTime = record.timestamp
@@ -113,6 +135,13 @@ final class SessionEngine {
             var resumed = todaySessions.remove(at: recentIndex)
             resumed.endTime = nil
             resumed.addApp(appName)
+            // Carry over intention/spanId if the resumed session doesn't have them
+            if resumed.intention == nil {
+                resumed.intention = currentIntention
+            }
+            if resumed.trackingSpanId == nil {
+                resumed.trackingSpanId = currentSpanId
+            }
             currentSession = resumed
             calendarWriter?.updateCurrentEvent(session: resumed)
             return
@@ -122,7 +151,9 @@ final class SessionEngine {
             category: category,
             startTime: time,
             endTime: nil,
-            appsUsed: [appName]
+            appsUsed: [appName],
+            intention: currentIntention,
+            trackingSpanId: currentSpanId
         )
         currentSession = session
         calendarWriter?.createEvent(for: session)

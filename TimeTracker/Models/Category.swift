@@ -3,6 +3,7 @@ import Foundation
 struct CategoryRule: Codable {
     var apps: [String]
     var related: [String]?
+    var urlPatterns: [String]?
 }
 
 struct CategoryConfig: Codable {
@@ -28,13 +29,31 @@ struct CategoryConfig: Codable {
         return rule.related?.contains(bundleId) ?? false
     }
 
-    func resolve(bundleId: String, currentCategory: String?) -> String {
+    func resolve(bundleId: String, currentCategory: String?, pageURL: String? = nil) -> String {
+        // 1. Check primary app match
         if let primary = category(forBundleId: bundleId) {
             return primary
         }
+
+        // 2. Check URL patterns
+        if let url = pageURL {
+            for (name, rule) in categories {
+                if let patterns = rule.urlPatterns {
+                    for pattern in patterns {
+                        if url.localizedCaseInsensitiveContains(pattern) {
+                            return name
+                        }
+                    }
+                }
+            }
+        }
+
+        // 3. Check related apps
         if let current = currentCategory, isRelated(bundleId: bundleId, toCategory: current) {
             return current
         }
+
+        // 4. Fall back to default
         return defaultCategory
     }
 }
