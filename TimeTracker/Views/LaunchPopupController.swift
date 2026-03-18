@@ -5,10 +5,11 @@ import AppKit
 final class LaunchPopupController {
     private var panel: NSPanel?
 
-    func show(onStart: @escaping (String?) -> Void, onDismiss: @escaping () -> Void) {
+    func show(categories: [String], onStart: @escaping (String, String?) -> Void, onDismiss: @escaping () -> Void) {
         let view = LaunchPopupView(
-            onStart: { [weak self] intention in
-                onStart(intention)
+            categories: categories,
+            onStart: { [weak self] category, intention in
+                onStart(category, intention)
                 self?.dismiss()
             },
             onDismiss: { [weak self] in
@@ -18,7 +19,7 @@ final class LaunchPopupController {
         )
 
         let panel = NSPanel(
-            contentRect: NSRect(x: 0, y: 0, width: 300, height: 320),
+            contentRect: NSRect(x: 0, y: 0, width: 320, height: 420),
             styleMask: [.nonactivatingPanel, .titled, .closable],
             backing: .buffered,
             defer: false

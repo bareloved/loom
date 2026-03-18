@@ -7,7 +7,7 @@ struct MenuBarView: View {
     let goalCategory: String
     let goalHours: Double
     let isTracking: Bool
-    let onStartTracking: (String?) -> Void
+    let onShowSessionPicker: () -> Void
     let onStopTracking: () -> Void
     let onQuit: () -> Void
 
@@ -59,7 +59,7 @@ struct MenuBarView: View {
                             .font(.system(size: 14))
                             .foregroundStyle(.secondary)
 
-                        Button(action: { onStartTracking(nil) }) {
+                        Button(action: onShowSessionPicker) {
                             Text("Start Session")
                                 .font(.system(size: 12, weight: .medium))
                                 .foregroundStyle(.white)
@@ -114,7 +114,7 @@ struct MenuBarView: View {
                     }
                     .buttonStyle(.plain)
                 } else {
-                    Button(action: { onStartTracking(nil) }) {
+                    Button(action: onShowSessionPicker) {
                         Image(systemName: "play.fill")
                             .font(.system(size: 16))
                     }

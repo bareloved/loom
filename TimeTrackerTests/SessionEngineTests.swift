@@ -6,196 +6,108 @@ import Foundation
 @MainActor
 struct SessionEngineTests {
 
-    static let config: CategoryConfig = {
-        let json = """
-        {
-          "categories": {
-            "Coding": {
-              "apps": ["com.apple.dt.Xcode"],
-              "related": ["com.apple.Terminal"]
-            },
-            "Email": {
-              "apps": ["com.apple.mail"]
-            },
-            "Browsing": {
-              "apps": ["com.apple.Safari"]
-            }
-          },
-          "default_category": "Other"
-        }
-        """.data(using: .utf8)!
-        return try! JSONDecoder().decode(CategoryConfig.self, from: json)
-    }()
-
     private func makeEngine() -> SessionEngine {
-        let engine = SessionEngine(config: Self.config, calendarWriter: nil)
-        engine.startSession()
-        return engine
+        SessionEngine(calendarWriter: nil)
     }
 
-    @Test("Starts a new session on first activity")
-    func startsNewSession() {
+    @Test("startSession creates session with given category")
+    func startSession() {
         let engine = makeEngine()
-        let record = ActivityRecord(
+        engine.startSession(category: "Coding", intention: "Build feature")
+
+        #expect(engine.isTracking == true)
+        #expect(engine.currentSession?.category == "Coding")
+        #expect(engine.currentSession?.intention == "Build feature")
+    }
+
+    @Test("stopSession finalizes and stores session")
+    func stopSession() {
+        let engine = makeEngine()
+        engine.startSession(category: "Coding")
+
+        engine.stopSession()
+
+        #expect(engine.isTracking == false)
+        #expect(engine.currentSession == nil)
+        #expect(engine.todaySessions.count == 1)
+        #expect(engine.todaySessions.first?.category == "Coding")
+        #expect(engine.todaySessions.first?.endTime != nil)
+    }
+
+    @Test("process adds app to current session")
+    func processAddsApp() {
+        let engine = makeEngine()
+        engine.startSession(category: "Coding")
+
+        engine.process(ActivityRecord(
             bundleId: "com.apple.dt.Xcode",
             appName: "Xcode",
-            windowTitle: "MyProject",
+            windowTitle: nil,
             timestamp: Date()
-        )
-        engine.process(record)
+        ))
 
-        #expect(engine.currentSession != nil)
-        #expect(engine.currentSession?.category == "Coding")
         #expect(engine.currentSession?.appsUsed.contains("Xcode") == true)
     }
 
-    @Test("Stays in same session for same category")
-    func sameCategory() {
+    @Test("process does nothing when not tracking")
+    func processGatedByTracking() {
         let engine = makeEngine()
-        let t = Date()
 
-        engine.process(ActivityRecord(bundleId: "com.apple.dt.Xcode", appName: "Xcode", windowTitle: nil, timestamp: t))
-        engine.process(ActivityRecord(bundleId: "com.apple.dt.Xcode", appName: "Xcode", windowTitle: nil, timestamp: t.addingTimeInterval(5)))
+        engine.process(ActivityRecord(
+            bundleId: "com.apple.dt.Xcode",
+            appName: "Xcode",
+            windowTitle: nil,
+            timestamp: Date()
+        ))
 
-        #expect(engine.currentSession?.category == "Coding")
-        #expect(engine.todaySessions.count == 0)
+        #expect(engine.currentSession == nil)
     }
 
-    @Test("Related app inherits current session category")
-    func relatedAppInherits() {
+    @Test("process adds multiple unique apps")
+    func processMultipleApps() {
         let engine = makeEngine()
-        let t = Date()
+        engine.startSession(category: "Coding")
 
+        let t = Date()
         engine.process(ActivityRecord(bundleId: "com.apple.dt.Xcode", appName: "Xcode", windowTitle: nil, timestamp: t))
         engine.process(ActivityRecord(bundleId: "com.apple.Terminal", appName: "Terminal", windowTitle: nil, timestamp: t.addingTimeInterval(5)))
+        engine.process(ActivityRecord(bundleId: "com.apple.dt.Xcode", appName: "Xcode", windowTitle: nil, timestamp: t.addingTimeInterval(10)))
 
-        #expect(engine.currentSession?.category == "Coding")
-        #expect(engine.currentSession?.appsUsed.contains("Terminal") == true)
+        #expect(engine.currentSession?.appsUsed == ["Xcode", "Terminal"])
     }
 
-    @Test("Related app starts new session if not related to current category")
-    func relatedAppNewSession() {
+    @Test("handleIdle finalizes session at idle time")
+    func handleIdle() {
         let engine = makeEngine()
-        let t = Date()
+        engine.startSession(category: "Coding")
+        let idleTime = Date().addingTimeInterval(600)
 
-        engine.process(ActivityRecord(bundleId: "com.apple.mail", appName: "Mail", windowTitle: nil, timestamp: t))
-        engine.process(ActivityRecord(
-            bundleId: "com.apple.Terminal", appName: "Terminal", windowTitle: nil,
-            timestamp: t.addingTimeInterval(130)
-        ))
+        engine.handleIdle(at: idleTime)
 
-        #expect(engine.currentSession?.category == "Other")
+        #expect(engine.isTracking == false)
+        #expect(engine.currentSession == nil)
+        #expect(engine.todaySessions.count == 1)
+        #expect(engine.todaySessions.first?.endTime == idleTime)
     }
 
-    @Test("Short switch (< 2 min) is absorbed into current session")
-    func shortSwitchAbsorbed() {
+    @Test("updateIntention updates current session")
+    func updateIntention() {
         let engine = makeEngine()
-        let t = Date()
+        engine.startSession(category: "Coding")
 
-        engine.process(ActivityRecord(bundleId: "com.apple.dt.Xcode", appName: "Xcode", windowTitle: nil, timestamp: t))
-        engine.process(ActivityRecord(bundleId: "com.apple.Safari", appName: "Safari", windowTitle: nil, timestamp: t.addingTimeInterval(30)))
-        engine.process(ActivityRecord(bundleId: "com.apple.dt.Xcode", appName: "Xcode", windowTitle: nil, timestamp: t.addingTimeInterval(60)))
+        engine.updateIntention("Deep work")
 
-        #expect(engine.currentSession?.category == "Coding")
-        #expect(engine.todaySessions.count == 0)
+        #expect(engine.currentSession?.intention == "Deep work")
     }
 
-    @Test("Category change after > 2 min creates new session")
-    func categoryChangeLong() {
+    @Test("Starting new session implicitly stops current one")
+    func implicitStop() {
         let engine = makeEngine()
-        let t = Date()
-
-        engine.process(ActivityRecord(bundleId: "com.apple.dt.Xcode", appName: "Xcode", windowTitle: nil, timestamp: t))
-        engine.process(ActivityRecord(
-            bundleId: "com.apple.mail", appName: "Mail", windowTitle: nil,
-            timestamp: t.addingTimeInterval(130)
-        ))
+        engine.startSession(category: "Coding")
+        engine.startSession(category: "Email")
 
         #expect(engine.currentSession?.category == "Email")
         #expect(engine.todaySessions.count == 1)
         #expect(engine.todaySessions.first?.category == "Coding")
-    }
-
-    @Test("Same category resumes within 5 min reopens previous session")
-    func sameCategoryResumes() {
-        let engine = makeEngine()
-        let t = Date()
-
-        engine.process(ActivityRecord(bundleId: "com.apple.dt.Xcode", appName: "Xcode", windowTitle: nil, timestamp: t))
-        engine.process(ActivityRecord(bundleId: "com.apple.mail", appName: "Mail", windowTitle: nil, timestamp: t.addingTimeInterval(130)))
-        engine.process(ActivityRecord(
-            bundleId: "com.apple.dt.Xcode", appName: "Xcode", windowTitle: nil,
-            timestamp: t.addingTimeInterval(260)
-        ))
-
-        #expect(engine.currentSession?.category == "Coding")
-        let codingSessions = engine.todaySessions.filter { $0.category == "Coding" }
-        #expect(codingSessions.count == 0) // reopened, not duplicated
-        let emailSessions = engine.todaySessions.filter { $0.category == "Email" }
-        #expect(emailSessions.count == 1)
-    }
-
-    @Test("Idle finalizes current session")
-    func idleFinalizes() {
-        let engine = makeEngine()
-        let t = Date()
-
-        engine.process(ActivityRecord(bundleId: "com.apple.dt.Xcode", appName: "Xcode", windowTitle: nil, timestamp: t))
-        engine.handleIdle(at: t.addingTimeInterval(600))
-
-        #expect(engine.currentSession == nil)
-        #expect(engine.todaySessions.count == 1)
-        #expect(engine.todaySessions.first?.category == "Coding")
-    }
-
-    @Test("Unknown app falls to default category")
-    func unknownApp() {
-        let engine = makeEngine()
-        engine.process(ActivityRecord(bundleId: "com.unknown.app", appName: "SomeApp", windowTitle: nil, timestamp: Date()))
-
-        #expect(engine.currentSession?.category == "Other")
-    }
-
-    // MARK: - Start/Stop Tests
-
-    @Test("Process is gated by isTracking")
-    func processGatedByTracking() {
-        let engine = SessionEngine(config: Self.config, calendarWriter: nil)
-        // Not tracking yet
-        engine.process(ActivityRecord(bundleId: "com.apple.dt.Xcode", appName: "Xcode", windowTitle: nil, timestamp: Date()))
-        #expect(engine.currentSession == nil)
-        #expect(engine.isTracking == false)
-    }
-
-    @Test("startSession sets tracking state")
-    func startSessionSetsState() {
-        let engine = SessionEngine(config: Self.config, calendarWriter: nil)
-        engine.startSession(intention: "Build feature")
-        #expect(engine.isTracking == true)
-        #expect(engine.currentSpanId != nil)
-    }
-
-    @Test("stopSession clears tracking state and finalizes")
-    func stopSessionClearsState() {
-        let engine = makeEngine()
-        let t = Date()
-        engine.process(ActivityRecord(bundleId: "com.apple.dt.Xcode", appName: "Xcode", windowTitle: nil, timestamp: t))
-        #expect(engine.currentSession != nil)
-
-        engine.stopSession()
-        #expect(engine.isTracking == false)
-        #expect(engine.currentSpanId == nil)
-        #expect(engine.currentSession == nil)
-        #expect(engine.todaySessions.count == 1)
-    }
-
-    @Test("Session gets intention and spanId from engine")
-    func sessionGetsIntentionAndSpan() {
-        let engine = SessionEngine(config: Self.config, calendarWriter: nil)
-        engine.startSession(intention: "Deep work")
-        engine.process(ActivityRecord(bundleId: "com.apple.dt.Xcode", appName: "Xcode", windowTitle: nil, timestamp: Date()))
-
-        #expect(engine.currentSession?.intention == "Deep work")
-        #expect(engine.currentSession?.trackingSpanId == engine.currentSpanId)
     }
 }
