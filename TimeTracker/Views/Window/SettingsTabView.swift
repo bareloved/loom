@@ -415,6 +415,26 @@ struct SettingsTabView: View {
             }
         }
 
+        settingsCard("Minimum Session Length") {
+            HStack {
+                Text("Write to calendar after")
+                    .foregroundStyle(Theme.textPrimary)
+                Spacer()
+                Picker("", selection: Binding(
+                    get: { calendarWriter.writeThreshold },
+                    set: { calendarWriter.writeThreshold = $0 }
+                )) {
+                    Text("5 min").tag(5)
+                    Text("10 min").tag(10)
+                    Text("15 min").tag(15)
+                    Text("20 min").tag(20)
+                    Text("30 min").tag(30)
+                }
+                .labelsHidden()
+                .frame(width: 100)
+            }
+        }
+
         if calendarWriter.isAuthorized {
             settingsCard("Status") {
                 HStack(spacing: 8) {

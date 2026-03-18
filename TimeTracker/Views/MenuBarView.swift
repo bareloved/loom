@@ -44,7 +44,9 @@ struct MenuBarView: View {
 
                 // Hero timer / session status
                 if let session = sessionEngine.currentSession {
-                    CurrentSessionView(session: session)
+                    CurrentSessionView(session: session) { intention in
+                        sessionEngine.updateIntention(intention)
+                    }
                 } else if isTracking {
                     Text("Starting...")
                         .font(.system(size: 14))
