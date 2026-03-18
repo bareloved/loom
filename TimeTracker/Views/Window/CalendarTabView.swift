@@ -195,16 +195,14 @@ struct CalendarTabView: View {
     }
 
     private func backfillSession(category: String, start: Date, end: Date, intention: String?) {
-        var session = Session(
+        let session = Session(
             category: category,
             startTime: start,
             endTime: end,
             appsUsed: [],
             intention: intention
         )
-        calendarWriter.createEvent(for: session)
-        session.endTime = end
-        calendarWriter.finalizeEvent(for: session)
+        calendarWriter.createEventImmediately(for: session)
         loadWeekSessions()
     }
 }

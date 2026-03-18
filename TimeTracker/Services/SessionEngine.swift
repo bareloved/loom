@@ -33,6 +33,7 @@ final class SessionEngine {
 
     func stopSession() {
         finalizeCurrentSession()
+        calendarWriter?.resetTracking()
         isTracking = false
         currentSpanId = nil
         currentIntention = nil

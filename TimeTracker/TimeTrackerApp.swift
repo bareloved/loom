@@ -380,15 +380,13 @@ final class AppState {
     private func createIdleEvent(label: String, duration: TimeInterval) {
         let endTime = Date()
         let startTime = endTime.addingTimeInterval(-duration)
-        var session = Session(
+        let session = Session(
             category: label,
             startTime: startTime,
             endTime: endTime,
             appsUsed: []
         )
-        calendarWriter.createEvent(for: session)
-        session.endTime = endTime
-        calendarWriter.finalizeEvent(for: session)
+        calendarWriter.createEventImmediately(for: session)
     }
 }
 
