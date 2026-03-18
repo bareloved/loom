@@ -33,7 +33,7 @@ struct MainWindowView: View {
                         TodayTabView(
                             sessionEngine: engine,
                             isTracking: engine.isTracking,
-                            onStart: { intention in appState.startTracking(intention: intention) },
+                            onShowSessionPicker: { appState.showSessionPicker() },
                             onStop: { appState.stopTracking() }
                         )
                     } else {
@@ -73,7 +73,7 @@ struct MainWindowView: View {
             if let engine = appState.sessionEngine {
                 MiniPlayerBar(
                     sessionEngine: engine,
-                    onStart: { appState.startTracking() },
+                    onStart: { appState.showSessionPicker() },
                     onStop: { appState.stopTracking() }
                 )
             }

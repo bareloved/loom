@@ -3,10 +3,9 @@ import SwiftUI
 struct TodayTabView: View {
     let sessionEngine: SessionEngine
     let isTracking: Bool
-    let onStart: (String?) -> Void
+    let onShowSessionPicker: () -> Void
     let onStop: () -> Void
 
-    @State private var intention: String = ""
     @State private var now = Date()
     @State private var timer: Timer?
 
@@ -32,23 +31,11 @@ struct TodayTabView: View {
         VStack(spacing: 16) {
             Spacer().frame(height: 40)
 
-            Text("What are you working on?")
+            Text("Ready to focus?")
                 .font(.system(size: 16, weight: .semibold))
                 .foregroundStyle(Theme.textPrimary)
 
-            TextField("Intention (optional)", text: $intention)
-                .font(.system(size: 14, design: .serif))
-                .textFieldStyle(.plain)
-                .padding(12)
-                .frame(maxWidth: 360)
-                .background(Theme.backgroundSecondary)
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-                .overlay(RoundedRectangle(cornerRadius: 10).stroke(Theme.border))
-
-            Button(action: {
-                onStart(intention.isEmpty ? nil : intention)
-                intention = ""
-            }) {
+            Button(action: onShowSessionPicker) {
                 Text("START SESSION")
                     .font(.system(size: 14, weight: .semibold))
                     .tracking(0.5)

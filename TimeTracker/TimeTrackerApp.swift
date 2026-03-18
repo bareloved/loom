@@ -65,6 +65,7 @@ final class AppState {
     var hotkeyManager = HotkeyManager()
     var idleReturnController = IdleReturnPanelController()
     var launchPopupController = LaunchPopupController()
+    private(set) var categoryConfig: CategoryConfig?
     @ObservationIgnored @AppStorage("showMenuBarText") var showMenuBarText = true
     @ObservationIgnored @AppStorage("goalCategory") var goalCategory = "Coding"
     @ObservationIgnored @AppStorage("goalHours") var goalHours = 0.0
@@ -93,7 +94,9 @@ final class AppState {
 
         accessibilityGranted = Self.testAccessibility()
 
-        let engine = SessionEngine(config: config, calendarWriter: calendarWriter)
+        self.categoryConfig = config
+
+        let engine = SessionEngine(calendarWriter: calendarWriter)
         self.sessionEngine = engine
 
         activityMonitor.onActivity = { [weak engine] record in
@@ -102,7 +105,6 @@ final class AppState {
         activityMonitor.onIdle = { [weak engine] in
             engine?.handleIdle(at: Date())
         }
-        // Do NOT start monitor here — it starts when the user starts tracking
 
         // Hotkey
         hotkeyManager.onToggle = { [weak self] in
@@ -130,9 +132,11 @@ final class AppState {
         setupWindowObservers()
 
         // Show launch popup
+        let categoryNames = Array(config.categories.keys).sorted()
         launchPopupController.show(
-            onStart: { [weak self] intention in
-                self?.startTracking(intention: intention)
+            categories: categoryNames,
+            onStart: { [weak self] category, intention in
+                self?.startTracking(category: category, intention: intention)
                 self?.openMainWindow()
             },
             onDismiss: { }
@@ -143,9 +147,20 @@ final class AppState {
 
     // MARK: - Start/Stop Tracking
 
-    func startTracking(intention: String? = nil) {
-        sessionEngine?.startSession(intention: intention)
+    func startTracking(category: String, intention: String? = nil) {
+        sessionEngine?.startSession(category: category, intention: intention)
         activityMonitor.start()
+    }
+
+    func showSessionPicker() {
+        let categoryNames = categoryConfig.map { Array($0.categories.keys).sorted() } ?? ["Other"]
+        launchPopupController.show(
+            categories: categoryNames,
+            onStart: { [weak self] category, intention in
+                self?.startTracking(category: category, intention: intention)
+            },
+            onDismiss: { }
+        )
     }
 
     func stopTracking() {
@@ -168,19 +183,7 @@ final class AppState {
     func saveConfig(_ newConfig: CategoryConfig) {
         do {
             try CategoryConfigLoader.save(newConfig)
-            // Rebuild engine with new config
-            let wasTracking = sessionEngine?.isTracking ?? false
-            let engine = SessionEngine(config: newConfig, calendarWriter: calendarWriter)
-            self.sessionEngine = engine
-            self.activityMonitor.onActivity = { [weak engine] record in
-                engine?.process(record)
-            }
-            self.activityMonitor.onIdle = { [weak engine] in
-                engine?.handleIdle(at: Date())
-            }
-            if wasTracking {
-                engine.startSession()
-            }
+            self.categoryConfig = newConfig
         } catch {
             print("Failed to save config: \(error)")
         }
@@ -439,7 +442,7 @@ struct TimeTrackerApp: App {
                         goalCategory: appState.goalCategory,
                         goalHours: appState.goalHours,
                         isTracking: engine.isTracking,
-                        onStartTracking: { intention in appState.startTracking(intention: intention) },
+                        onShowSessionPicker: { appState.showSessionPicker() },
                         onStopTracking: { appState.stopTracking() },
                         onQuit: appState.quit
                     )

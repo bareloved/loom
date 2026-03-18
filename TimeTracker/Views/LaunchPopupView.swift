@@ -1,10 +1,19 @@
 import SwiftUI
 
 struct LaunchPopupView: View {
-    let onStart: (String?) -> Void
+    let categories: [String]
+    let onStart: (String, String?) -> Void
     let onDismiss: () -> Void
 
+    @State private var selectedCategory: String
     @State private var intention = ""
+
+    init(categories: [String], onStart: @escaping (String, String?) -> Void, onDismiss: @escaping () -> Void) {
+        self.categories = categories
+        self.onStart = onStart
+        self.onDismiss = onDismiss
+        self._selectedCategory = State(initialValue: categories.first ?? "Other")
+    }
 
     var body: some View {
         VStack(spacing: 14) {
@@ -15,11 +24,40 @@ struct LaunchPopupView: View {
                 .font(.system(size: 17, weight: .semibold))
                 .foregroundStyle(Theme.textPrimary)
 
-            Text("What are you working on?")
-                .font(.system(size: 12))
-                .foregroundStyle(Theme.textTertiary)
+            // Category picker
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Category")
+                    .font(.system(size: 11))
+                    .foregroundStyle(Theme.textTertiary)
 
-            TextField("Intention (optional)", text: $intention)
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 80), spacing: 6)], spacing: 6) {
+                    ForEach(categories, id: \.self) { category in
+                        Button(action: { selectedCategory = category }) {
+                            HStack(spacing: 4) {
+                                Circle()
+                                    .fill(CategoryColors.color(for: category))
+                                    .frame(width: 6, height: 6)
+                                Text(category)
+                                    .font(.system(size: 11, weight: selectedCategory == category ? .semibold : .regular))
+                                    .lineLimit(1)
+                            }
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 6)
+                            .frame(maxWidth: .infinity)
+                            .background(selectedCategory == category ? CategoryColors.color(for: category).opacity(0.15) : Theme.trackFill)
+                            .clipShape(RoundedRectangle(cornerRadius: 6))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .stroke(selectedCategory == category ? CategoryColors.color(for: category).opacity(0.4) : .clear, lineWidth: 1)
+                            )
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+            }
+
+            // Intention field
+            TextField("What are you working on? (optional)", text: $intention)
                 .textFieldStyle(.roundedBorder)
                 .onSubmit { startSession() }
 
@@ -43,11 +81,11 @@ struct LaunchPopupView: View {
             .buttonStyle(.plain)
         }
         .padding(28)
-        .frame(width: 300)
+        .frame(width: 320)
         .background(Theme.background)
     }
 
     private func startSession() {
-        onStart(intention.isEmpty ? nil : intention)
+        onStart(selectedCategory, intention.isEmpty ? nil : intention)
     }
 }
