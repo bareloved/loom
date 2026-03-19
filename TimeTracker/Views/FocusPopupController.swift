@@ -1,6 +1,11 @@
 import SwiftUI
 import AppKit
 
+/// Borderless panels can't become key by default — override so buttons work.
+private class ClickablePanel: NSPanel {
+    override var canBecomeKey: Bool { true }
+}
+
 @MainActor
 final class FocusPopupController {
     private var panel: NSPanel?
@@ -26,7 +31,7 @@ final class FocusPopupController {
             }
         )
 
-        let panel = NSPanel(
+        let panel = ClickablePanel(
             contentRect: NSRect(x: 0, y: 0, width: 260, height: 240),
             styleMask: [.nonactivatingPanel, .borderless],
             backing: .buffered,
