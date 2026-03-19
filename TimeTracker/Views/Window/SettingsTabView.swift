@@ -4,6 +4,7 @@ import UniformTypeIdentifiers
 
 enum SettingsSection: String, CaseIterable, Identifiable {
     case general = "General"
+    case focusGuard = "Focus Guard"
     case notification = "Notification"
     case calendar = "Calendar"
     case category = "Category"
@@ -15,6 +16,7 @@ enum SettingsSection: String, CaseIterable, Identifiable {
     var icon: String {
         switch self {
         case .general: return "gearshape"
+        case .focusGuard: return "eye.trianglebadge.exclamationmark"
         case .notification: return "bell"
         case .calendar: return "calendar"
         case .category: return "tag"
@@ -39,6 +41,9 @@ struct SettingsTabView: View {
     @AppStorage("showMenuBarText") private var showMenuBarText = true
     @AppStorage("goalCategory") private var goalCategory = "Coding"
     @AppStorage("goalHours") private var goalHours = 0.0
+    @AppStorage("focusGuardEnabled") private var focusGuardEnabled = true
+    @AppStorage("focusThreshold") private var focusThreshold: Double = 30
+    @AppStorage("snoozeDuration") private var snoozeDuration: Double = 300
 
     let calendarWriter: CalendarWriter
     let appState: AppState
@@ -107,6 +112,8 @@ struct SettingsTabView: View {
                             switch selectedSection {
                             case .general:
                                 generalSection
+                            case .focusGuard:
+                                focusGuardSection
                             case .notification:
                                 placeholderSection("Notification settings coming soon.")
                             case .calendar:
@@ -292,6 +299,62 @@ struct SettingsTabView: View {
                         .foregroundStyle(Theme.textSecondary)
                     Stepper("", value: $goalHours, in: 0...12, step: 0.5)
                         .labelsHidden()
+                }
+            }
+        }
+    }
+
+    // MARK: - Focus Guard
+
+    @ViewBuilder
+    private var focusGuardSection: some View {
+        Text("Focus Guard")
+            .font(.system(size: 20, weight: .semibold))
+            .foregroundStyle(Theme.textPrimary)
+
+        settingsCard("Focus Guard") {
+            VStack(spacing: 10) {
+                HStack {
+                    Text("Enabled")
+                        .foregroundStyle(Theme.textPrimary)
+                    Spacer()
+                    Toggle("", isOn: $focusGuardEnabled)
+                        .toggleStyle(.switch)
+                        .tint(CategoryColors.accent)
+                        .labelsHidden()
+                }
+
+                if focusGuardEnabled {
+                    Divider()
+
+                    HStack {
+                        Text("Distraction threshold")
+                            .foregroundStyle(Theme.textPrimary)
+                        Spacer()
+                        Text("\(Int(focusThreshold))s")
+                            .foregroundStyle(Theme.textSecondary)
+                            .frame(width: 40, alignment: .trailing)
+                        Slider(value: $focusThreshold, in: 15...120, step: 5)
+                            .frame(width: 140)
+                            .tint(CategoryColors.accent)
+                    }
+
+                    Divider()
+
+                    HStack {
+                        Text("Snooze duration")
+                            .foregroundStyle(Theme.textPrimary)
+                        Spacer()
+                        Picker("", selection: $snoozeDuration) {
+                            Text("2 min").tag(120.0)
+                            Text("5 min").tag(300.0)
+                            Text("10 min").tag(600.0)
+                            Text("20 min").tag(1200.0)
+                        }
+                        .pickerStyle(.segmented)
+                        .labelsHidden()
+                        .frame(maxWidth: 240)
+                    }
                 }
             }
         }
