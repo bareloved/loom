@@ -1,11 +1,6 @@
 import SwiftUI
 import AppKit
 
-/// Borderless panels can't become key by default — override so buttons work.
-private class ClickablePanel: NSPanel {
-    override var canBecomeKey: Bool { true }
-}
-
 @MainActor
 final class FocusPopupController {
     private var panel: NSPanel?
@@ -31,31 +26,17 @@ final class FocusPopupController {
             }
         )
 
-        let hostingView = NSHostingView(rootView:
-            view
-                .background(
-                    RoundedRectangle(cornerRadius: 16, style: .continuous)
-                        .fill(Theme.background)
-                )
-                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-        )
-        let size = hostingView.fittingSize
-
-        let panel = ClickablePanel(
-            contentRect: NSRect(x: 0, y: 0, width: size.width, height: size.height),
-            styleMask: [.nonactivatingPanel, .borderless],
+        let panel = NSPanel(
+            contentRect: NSRect(x: 0, y: 0, width: 260, height: 300),
+            styleMask: [.nonactivatingPanel, .titled, .closable],
             backing: .buffered,
             defer: false
         )
         panel.level = .floating
         panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
-        panel.isOpaque = false
-        panel.backgroundColor = .clear
-        panel.hasShadow = true
-        panel.isMovableByWindowBackground = true
-        panel.contentView = hostingView
+        panel.title = "Loom"
+        panel.contentView = NSHostingView(rootView: view)
         panel.center()
-        NSApp.activate(ignoringOtherApps: true)
         panel.makeKeyAndOrderFront(nil)
         self.panel = panel
     }
