@@ -58,6 +58,8 @@ Unrecognized apps fall under **Other**. Edit the JSON to add your own apps, URL 
 
 - **Menu bar dropdown** — session timer, category indicator, start/stop, focus goals
 - **Main window** — Today view with session timeline, calendar view, stats, settings
+- **Focus guard** — detects when you drift to off-category apps and nudges you back with a popup
+- **Distraction tracking** — logs distractions with duration, written to calendar event notes
 - **Global hotkey** — Option+Shift+T to pause/resume tracking
 - **Smart session management** — waits 5 minutes before switching categories to ignore brief app switches
 - **Idle detection** — pauses tracking after 5 minutes of inactivity
@@ -69,11 +71,11 @@ Unrecognized apps fall under **Other**. Edit the JSON to add your own apps, URL 
 
 ```
 TimeTracker/
-├── Models/          # Session, Category, ActivityRecord, CategoryColors
-├── Services/        # SessionEngine, ActivityMonitor, CalendarWriter,
-│                    # BrowserTracker, CategoryConfigLoader, HotkeyManager
-├── Views/
-│   ├── MenuBar/     # Menu bar dropdown UI
+├── Models/          # Session, Distraction, Category, ActivityRecord, CategoryColors
+├── Services/        # SessionEngine, ActivityMonitor, CalendarWriter, FocusGuard,
+│                    # BrowserTracker, CategoryConfigLoader, HotkeyManager, IdleDetector
+├── Views/           # MenuBarView, CurrentSessionView, LaunchPopupView,
+│                    # FocusPopupView, IdleReturnPanel
 │   └── Window/      # Main window (Today, Calendar, Stats, Settings)
 ├── Resources/       # Default category config, app icons
 └── TimeTrackerApp.swift  # @main entry point, AppState orchestrator
