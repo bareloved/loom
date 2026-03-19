@@ -82,7 +82,6 @@ struct LaunchPopupView: View {
         }
         .padding(28)
         .frame(width: 320)
-        .background(Theme.background)
     }
 
     private func startSession() {

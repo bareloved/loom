@@ -20,14 +20,24 @@ final class LaunchPopupController {
 
         let panel = NSPanel(
             contentRect: NSRect(x: 0, y: 0, width: 320, height: 420),
-            styleMask: [.nonactivatingPanel, .titled, .closable],
+            styleMask: [.nonactivatingPanel, .borderless],
             backing: .buffered,
             defer: false
         )
         panel.level = .floating
         panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
-        panel.title = "Loom"
-        panel.contentView = NSHostingView(rootView: view)
+        panel.isOpaque = false
+        panel.backgroundColor = .clear
+        panel.hasShadow = true
+        panel.isMovableByWindowBackground = true
+        panel.contentView = NSHostingView(rootView:
+            view
+                .background(
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .fill(Theme.background)
+                )
+                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        )
         panel.center()
         panel.makeKeyAndOrderFront(nil)
         self.panel = panel
