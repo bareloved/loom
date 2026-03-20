@@ -19,9 +19,21 @@ Browser tabs are tracked too — Loom reads the active tab URL via the Accessibi
 - macOS 14.0+
 - **Accessibility permission** — needed to read window titles and browser URLs
 - **Calendar permission** — needed to create tracking events
-- Xcode Command Line Tools (`xcode-select --install`)
+- Xcode Command Line Tools (`xcode-select --install`) — only needed to build from source
 
-## Build & Run
+## Install
+
+```bash
+# Create a DMG with Loom.app — drag to Applications to install
+./scripts/create-dmg.sh
+
+# Or sign with your Apple Development certificate
+./scripts/create-dmg.sh --sign "Apple Development: you@example.com (TEAMID)"
+```
+
+Open `Loom.dmg`, drag `Loom.app` into the Applications folder, then launch from Spotlight or `/Applications/Loom.app`. On first launch, macOS will prompt for Accessibility and Calendar permissions.
+
+## Build & Run (Development)
 
 ```bash
 # Build and launch (main dev loop)
