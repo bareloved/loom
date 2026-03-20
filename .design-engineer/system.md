@@ -1,4 +1,4 @@
-# TimeTracker Design System
+# Loom Design System
 
 ## Direction
 Warm, matte, earthy. Like watercolor on linen paper. Dense but calm — a watch face you glance at, not a dashboard you study. Terracotta as the single accent color.

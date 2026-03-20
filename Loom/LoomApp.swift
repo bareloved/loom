@@ -313,7 +313,7 @@ final class AppState {
         SMAppService.mainApp.status == .enabled
     }
 
-    // appearanceScheme moved to TimeTrackerApp struct
+    // appearanceScheme moved to LoomApp struct
 
     func setupWindowObservers() {
         NotificationCenter.default.addObserver(forName: NSWindow.didBecomeKeyNotification, object: nil, queue: .main) { notification in
@@ -409,7 +409,7 @@ final class AppState {
 }
 
 @main
-struct TimeTrackerApp: App {
+struct LoomApp: App {
     @State private var appState = AppState()
     @AppStorage("appearance") private var appearance = "system"
 

@@ -70,7 +70,7 @@ Unrecognized apps fall under **Other**. Edit the JSON to add your own apps, URL 
 ## Project Structure
 
 ```
-TimeTracker/
+Loom/
 ├── Models/          # Session, Distraction, Category, ActivityRecord, CategoryColors
 ├── Services/        # SessionEngine, ActivityMonitor, CalendarWriter, FocusGuard,
 │                    # BrowserTracker, CategoryConfigLoader, HotkeyManager, IdleDetector
@@ -78,7 +78,7 @@ TimeTracker/
 │                    # FocusPopupView, IdleReturnPanel
 │   └── Window/      # Main window (Today, Calendar, Stats, Settings)
 ├── Resources/       # Default category config, app icons
-└── TimeTrackerApp.swift  # @main entry point, AppState orchestrator
+└── LoomApp.swift    # @main entry point, AppState orchestrator
 ```
 
 ## License

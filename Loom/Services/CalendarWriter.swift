@@ -8,7 +8,7 @@ import SwiftUI
 final class CalendarWriter {
 
     private let eventStore = EKEventStore()
-    private var timeTrackerCalendar: EKCalendar?
+    private var loomCalendar: EKCalendar?
     private var currentEventIdentifier: String?
     private var updateTimer: Timer?
     private(set) var isAuthorized = false
@@ -45,11 +45,11 @@ final class CalendarWriter {
     }
 
     var currentCalendarTitle: String {
-        timeTrackerCalendar?.title ?? calendarName
+        loomCalendar?.title ?? calendarName
     }
 
     var currentSourceTitle: String {
-        timeTrackerCalendar?.source.title ?? "Unknown"
+        loomCalendar?.source.title ?? "Unknown"
     }
 
     var sharedEventStore: EKEventStore { eventStore }
@@ -79,7 +79,7 @@ final class CalendarWriter {
     private func ensureCalendarExists() {
         let calendars = eventStore.calendars(for: .event)
         if let existing = calendars.first(where: { $0.title == calendarName }) {
-            timeTrackerCalendar = existing
+            loomCalendar = existing
             return
         }
 
@@ -95,7 +95,7 @@ final class CalendarWriter {
 
         do {
             try eventStore.saveCalendar(calendar, commit: true)
-            timeTrackerCalendar = calendar
+            loomCalendar = calendar
         } catch {
             print("Failed to create calendar: \(error)")
         }
@@ -111,14 +111,14 @@ final class CalendarWriter {
 
         do {
             try eventStore.saveCalendar(calendar, commit: true)
-            timeTrackerCalendar = calendar
+            loomCalendar = calendar
         } catch {
             print("Failed to switch calendar source: \(error)")
         }
     }
 
     func renameCalendar(to newName: String) {
-        guard !newName.isEmpty, let calendar = timeTrackerCalendar else { return }
+        guard !newName.isEmpty, let calendar = loomCalendar else { return }
         calendar.title = newName
         do {
             try eventStore.saveCalendar(calendar, commit: true)
@@ -169,7 +169,7 @@ final class CalendarWriter {
     func createEvent(for session: Session) {
         guard writeEnabled else { return }
         ensureCalendarExists()
-        guard let calendar = timeTrackerCalendar else { return }
+        guard let calendar = loomCalendar else { return }
 
         let event = EKEvent(eventStore: eventStore)
         event.title = Self.buildTitle(session: session)
@@ -230,7 +230,7 @@ final class CalendarWriter {
     func createEventImmediately(for session: Session) {
         guard writeEnabled else { return }
         ensureCalendarExists()
-        guard let calendar = timeTrackerCalendar else { return }
+        guard let calendar = loomCalendar else { return }
 
         let event = EKEvent(eventStore: eventStore)
         event.title = Self.buildTitle(session: session)
@@ -292,7 +292,7 @@ final class CalendarWriter {
         guard let monday = calendar.date(from: comps) else { return [:] }
 
         let todayStart = calendar.startOfDay(for: now)
-        guard let tracker = timeTrackerCalendar else { return [:] }
+        guard let tracker = loomCalendar else { return [:] }
 
         let predicate = eventStore.predicateForEvents(
             withStart: monday, end: todayStart, calendars: [tracker]

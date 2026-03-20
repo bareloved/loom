@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
     <key>CFBundleName</key>
-    <string>TimeTracker</string>
+    <string>Loom</string>
     <key>CFBundleIdentifier</key>
-    <string>com.personal.TimeTracker</string>
+    <string>com.personal.Loom</string>
     <key>CFBundleVersion</key>
     <string>1</string>
     <key>CFBundleShortVersionString</key>
@@ -13,7 +13,7 @@
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleExecutable</key>
-    <string>TimeTracker</string>
+    <string>Loom</string>
     <key>CFBundleIconFile</key>
     <string>AppIcon</string>
     <key>LSUIElement</key>
@@ -21,8 +21,8 @@
     <key>LSMinimumSystemVersion</key>
     <string>14.0</string>
     <key>NSCalendarsFullAccessUsageDescription</key>
-    <string>TimeTracker needs calendar access to create events for your tracked activity sessions.</string>
+    <string>Loom needs calendar access to create events for your tracked activity sessions.</string>
     <key>NSAccessibilityUsageDescription</key>
-    <string>TimeTracker needs accessibility access to read window titles for better activity tracking.</string>
+    <string>Loom needs accessibility access to read window titles for better activity tracking.</string>
 </dict>
 </plist>

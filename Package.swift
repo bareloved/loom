@@ -7,7 +7,8 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "Loom",
-            path: "TimeTracker",
+            path: "Loom",
+            exclude: ["Info.plist", "Loom.entitlements"],
             resources: [
                 .copy("Resources/default-categories.json"),
                 .copy("Resources/AppIcon.appiconset"),
@@ -17,7 +18,7 @@ let package = Package(
         .testTarget(
             name: "LoomTests",
             dependencies: ["Loom"],
-            path: "TimeTrackerTests"
+            path: "LoomTests"
         )
     ]
 )

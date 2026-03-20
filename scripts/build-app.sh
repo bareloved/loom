@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-APP_NAME="TimeTracker"
+APP_NAME="Loom"
 BUILD_DIR=".build/release"
 APP_BUNDLE="$BUILD_DIR/$APP_NAME.app"
 CONTENTS="$APP_BUNDLE/Contents"
@@ -18,19 +18,19 @@ mkdir -p "$CONTENTS/Resources"
 cp "$BUILD_DIR/$APP_NAME" "$CONTENTS/MacOS/$APP_NAME"
 
 # Copy Info.plist
-cp "TimeTracker/Info.plist" "$CONTENTS/Info.plist"
+cp "Loom/Info.plist" "$CONTENTS/Info.plist"
 
 # Copy entitlements (for reference)
-cp "TimeTracker/TimeTracker.entitlements" "$CONTENTS/Resources/"
+cp "Loom/Loom.entitlements" "$CONTENTS/Resources/"
 
 # Copy resources
-if [ -d "$BUILD_DIR/TimeTracker_TimeTracker.resources" ]; then
-    cp -R "$BUILD_DIR/TimeTracker_TimeTracker.resources/"* "$CONTENTS/Resources/" 2>/dev/null || true
+if [ -d "$BUILD_DIR/Loom_Loom.resources" ]; then
+    cp -R "$BUILD_DIR/Loom_Loom.resources/"* "$CONTENTS/Resources/" 2>/dev/null || true
 fi
 
 # Sign with entitlements
 codesign --force --sign - \
-    --entitlements "TimeTracker/TimeTracker.entitlements" \
+    --entitlements "Loom/Loom.entitlements" \
     "$APP_BUNDLE"
 
 echo ""

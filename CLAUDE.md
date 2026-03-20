@@ -23,7 +23,7 @@ swift test
 
 ## Architecture
 
-**Package.swift** defines executable product `Loom` with sources in `TimeTracker/` and tests in `TimeTrackerTests/`. Despite the directory name, the branded product name is **Loom**.
+**Package.swift** defines executable product `Loom` with sources in `Loom/` and tests in `LoomTests/`.
 
 ### Data Flow
 
@@ -48,7 +48,7 @@ ActivityMonitor (polls every 5s)
 
 ### State Management
 
-Uses Swift `@Observable` classes with `@MainActor` isolation. `AppState` (in `TimeTrackerApp.swift`) is the root orchestrator that wires services together.
+Uses Swift `@Observable` classes with `@MainActor` isolation. `AppState` (in `LoomApp.swift`) is the root orchestrator that wires services together.
 
 ### Views
 
@@ -73,7 +73,7 @@ The app requires **Accessibility** (window titles, browser URL extraction) and *
 
 ## Testing
 
-Uses Swift Testing framework (`@Suite`, `@Test`, `#expect`). Tests in `TimeTrackerTests/` cover SessionEngine logic, category resolution, colors, config loading, and Session model.
+Uses Swift Testing framework (`@Suite`, `@Test`, `#expect`). Tests in `LoomTests/` cover SessionEngine logic, category resolution, colors, config loading, and Session model.
 
 ## Design System
 
