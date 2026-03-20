@@ -23,15 +23,10 @@ Browser tabs are tracked too — Loom reads the active tab URL via the Accessibi
 
 ## Install
 
-```bash
-# Create a DMG with Loom.app — drag to Applications to install
-./scripts/create-dmg.sh
-
-# Or sign with your Apple Development certificate
-./scripts/create-dmg.sh --sign "Apple Development: you@example.com (TEAMID)"
-```
-
-Open `Loom.dmg`, drag `Loom.app` into the Applications folder, then launch from Spotlight or `/Applications/Loom.app`. On first launch, macOS will prompt for Accessibility and Calendar permissions.
+1. Download `Loom.dmg` from the [latest release](../../releases/latest)
+2. Open the DMG and drag `Loom.app` into your Applications folder
+3. Launch Loom from Applications or Spotlight
+4. Grant Accessibility and Calendar permissions when prompted
 
 ## Build & Run (Development)
 
@@ -50,6 +45,15 @@ swift test
 ```
 
 `run.sh` builds a release binary, kills any running instance, copies into `/Applications/Loom.app`, codesigns, and opens it. The `.app` bundle at `/Applications/Loom.app` must already exist (use `scripts/build-app.sh` to create it initially).
+
+### Publishing a release
+
+```bash
+./scripts/release.sh v1.0
+./scripts/release.sh v1.1 --notes "Fixed idle detection bug"
+```
+
+This builds the app, packages it into a DMG, and uploads it as a GitHub release.
 
 ## Configuration
 
