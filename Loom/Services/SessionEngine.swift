@@ -76,6 +76,16 @@ final class SessionEngine {
         currentSession?.distractions = distractions
     }
 
+    func removeFromToday(id: UUID) {
+        todaySessions.removeAll { $0.id == id }
+    }
+
+    func updateInToday(_ session: Session) {
+        if let index = todaySessions.firstIndex(where: { $0.id == session.id }) {
+            todaySessions[index] = session
+        }
+    }
+
     func handleIdle(at time: Date) {
         guard var session = currentSession else { return }
         session.endTime = time

@@ -237,6 +237,7 @@ struct CalendarTabView: View {
     }
 
     private func saveEditedSession(_ session: Session) {
+        sessionEngine.updateInToday(session)
         Task {
             if let syncEngine {
                 await syncEngine.updateSession(session)
@@ -246,6 +247,7 @@ struct CalendarTabView: View {
     }
 
     private func deleteSession(_ session: Session) {
+        sessionEngine.removeFromToday(id: session.id)
         Task {
             if let syncEngine {
                 await syncEngine.deleteSession(id: session.id)
