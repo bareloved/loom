@@ -9,9 +9,11 @@ final class SessionEngine {
     private(set) var isTracking = false
 
     private let calendarWriter: CalendarWriter?
+    private let syncEngine: SyncEngine?
 
-    init(calendarWriter: CalendarWriter?) {
+    init(calendarWriter: CalendarWriter?, syncEngine: SyncEngine? = nil) {
         self.calendarWriter = calendarWriter
+        self.syncEngine = syncEngine
     }
 
     func startSession(category: String, intention: String? = nil) {
@@ -28,6 +30,9 @@ final class SessionEngine {
         )
         currentSession = session
         calendarWriter?.createEvent(for: session)
+        if let syncEngine {
+            Task { await syncEngine.publishSessionStart(session) }
+        }
     }
 
     func stopSession() {
@@ -35,6 +40,9 @@ final class SessionEngine {
         session.endTime = Date()
         todaySessions.append(session)
         calendarWriter?.finalizeEvent(for: session)
+        if let syncEngine {
+            Task { await syncEngine.publishSessionStop(session) }
+        }
         currentSession = nil
         isTracking = false
     }
@@ -73,6 +81,9 @@ final class SessionEngine {
         session.endTime = time
         todaySessions.append(session)
         calendarWriter?.finalizeEvent(for: session)
+        if let syncEngine {
+            Task { await syncEngine.publishSessionStop(session) }
+        }
         currentSession = nil
         isTracking = false
     }

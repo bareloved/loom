@@ -65,6 +65,7 @@ final class AppState {
     var hotkeyManager = HotkeyManager()
     var idleReturnController = IdleReturnPanelController()
     var launchPopupController = LaunchPopupController()
+    var syncEngine: SyncEngine?
     var focusGuard: FocusGuard?
     private(set) var categoryConfig: CategoryConfig?
     @ObservationIgnored @AppStorage("showMenuBarText") var showMenuBarText = true
@@ -97,7 +98,10 @@ final class AppState {
 
         self.categoryConfig = config
 
-        let engine = SessionEngine(calendarWriter: calendarWriter)
+        let sync = SyncEngine(source: "mac")
+        self.syncEngine = sync
+
+        let engine = SessionEngine(calendarWriter: calendarWriter, syncEngine: sync)
         self.sessionEngine = engine
 
         let guard_ = FocusGuard(sessionEngine: engine, categoryConfig: config)
@@ -151,6 +155,8 @@ final class AppState {
             onDismiss: { }
         )
 
+        Task { await sync.setupSubscriptions() }
+
         isReady = true
     }
 
@@ -198,6 +204,9 @@ final class AppState {
         do {
             try CategoryConfigLoader.save(newConfig)
             self.categoryConfig = newConfig
+            if let syncEngine {
+                Task { await syncEngine.publishCategoryConfig(newConfig) }
+            }
         } catch {
             print("Failed to save config: \(error)")
         }
