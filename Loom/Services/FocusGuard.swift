@@ -79,11 +79,11 @@ final class FocusGuard {
     private func handleOffCategory(record: ActivityRecord) {
         if offCategoryStart == nil {
             offCategoryStart = Date()
-            offCategoryAppName = record.appName
-            offCategoryBundleId = record.bundleId
-            offCategoryURL = record.pageURL
             distractionLoggedForCurrentDrift = false
         }
+        offCategoryAppName = record.appName
+        offCategoryBundleId = record.bundleId
+        offCategoryURL = record.pageURL
 
         guard let start = offCategoryStart else { return }
         let elapsed = Date().timeIntervalSince(start)
