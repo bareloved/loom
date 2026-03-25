@@ -111,7 +111,7 @@ struct ContentView: View {
                 .tabItem {
                     Label("History", systemImage: "list.bullet")
                 }
-            Text("Settings")
+            SettingsTabView(appState: appState)
                 .tabItem {
                     Label("Settings", systemImage: "gearshape")
                 }
