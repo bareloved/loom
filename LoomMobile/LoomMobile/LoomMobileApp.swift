@@ -66,6 +66,14 @@ final class MobileAppState {
         remoteSession = nil
     }
 
+    func updateSession(_ session: Session) async {
+        await syncEngine.updateSession(session)
+    }
+
+    func deleteSession(id: UUID) async {
+        await syncEngine.deleteSession(id: id)
+    }
+
     func fetchSessions(for date: Date) async -> [Session] {
         let calendar = Calendar.current
         let start = calendar.startOfDay(for: date)

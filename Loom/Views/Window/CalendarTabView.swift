@@ -227,20 +227,31 @@ struct CalendarTabView: View {
             appsUsed: [],
             intention: intention
         )
-        calendarWriter.createEventImmediately(for: session)
-        loadWeekSessions()
+        Task {
+            if let syncEngine {
+                await syncEngine.publishSessionStart(session)
+                await syncEngine.publishSessionStop(session)
+            }
+            loadWeekSessions()
+        }
     }
 
     private func saveEditedSession(_ session: Session) {
-        guard let eventId = session.eventIdentifier else { return }
-        calendarWriter.updateEvent(eventIdentifier: eventId, session: session)
-        loadWeekSessions()
+        Task {
+            if let syncEngine {
+                await syncEngine.updateSession(session)
+            }
+            loadWeekSessions()
+        }
     }
 
     private func deleteSession(_ session: Session) {
-        guard let eventId = session.eventIdentifier else { return }
-        calendarWriter.deleteEvent(eventIdentifier: eventId)
-        loadWeekSessions()
+        Task {
+            if let syncEngine {
+                await syncEngine.deleteSession(id: session.id)
+            }
+            loadWeekSessions()
+        }
     }
 }
 

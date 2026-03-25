@@ -89,6 +89,22 @@ public final class SyncEngine {
         }
     }
 
+    public func updateSession(_ session: Session) async {
+        do {
+            try await cloudKit.updateSession(session, source: source)
+        } catch {
+            print("SyncEngine: failed to update session: \(error)")
+        }
+    }
+
+    public func deleteSession(id: UUID) async {
+        do {
+            try await cloudKit.deleteSession(id: id)
+        } catch {
+            print("SyncEngine: failed to delete session: \(error)")
+        }
+    }
+
     public func forceStopRemoteSession() async {
         stopHeartbeat()
         do {

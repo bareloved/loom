@@ -148,6 +148,11 @@ public final class CloudKitManager: Sendable {
         }
     }
 
+    public func deleteSession(id: UUID) async throws {
+        let recordID = CKRecord.ID(recordName: id.uuidString)
+        try await database.deleteRecord(withID: recordID)
+    }
+
     // MARK: - CRUD: Active Session
 
     public func updateActiveSession(_ session: Session, source: String) async throws {

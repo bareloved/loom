@@ -6,6 +6,7 @@ struct HistoryTabView: View {
     @State private var selectedDate = Date()
     @State private var sessions: [Session] = []
     @State private var isLoading = false
+    @State private var editingSession: Session?
 
     var body: some View {
         NavigationStack {
@@ -102,15 +103,39 @@ struct HistoryTabView: View {
                         .padding(.top, 40)
                 } else {
                     ForEach(sessions) { session in
-                        NavigationLink {
-                            SessionDetailView(session: session)
-                        } label: {
-                            sessionRow(session)
-                        }
-                        .buttonStyle(.plain)
+                        sessionRow(session)
+                            .contextMenu {
+                                Button {
+                                    editingSession = session
+                                } label: {
+                                    Label("Edit", systemImage: "pencil")
+                                }
+                                Button(role: .destructive) {
+                                    Task {
+                                        await appState.deleteSession(id: session.id)
+                                        await loadSessions()
+                                    }
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                            }
                     }
                 }
             }
+        }
+        .sheet(item: $editingSession) { session in
+            SessionEditView(
+                session: session,
+                categories: appState.categoryConfig?.orderedCategoryNames ?? [],
+                onSave: { updated in
+                    Task {
+                        await appState.updateSession(updated)
+                        await loadSessions()
+                    }
+                    editingSession = nil
+                },
+                onCancel: { editingSession = nil }
+            )
         }
     }
 
