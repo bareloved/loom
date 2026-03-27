@@ -8,6 +8,7 @@ struct SessionsTabView: View {
     @State private var selectedDate = Date()
     @State private var weekSessions: [Date: [Session]] = [:]
     @State private var expandedSessionId: UUID?
+    @State private var editingSession: Session?
 
     private let calendar = Calendar.current
 
@@ -101,7 +102,14 @@ struct SessionsTabView: View {
                             }) {
                                 SessionCardView(
                                     session: session,
-                                    isExpanded: expandedSessionId == session.id
+                                    isExpanded: expandedSessionId == session.id,
+                                    onEdit: { session in
+                                        editingSession = session
+                                    },
+                                    onDelete: { _ in },
+                                    onConfirmDelete: { session in
+                                        deleteSession(session)
+                                    }
                                 )
                             }
                             .buttonStyle(.plain)
@@ -117,6 +125,23 @@ struct SessionsTabView: View {
         .onChange(of: selectedDate) {
             expandedSessionId = nil
             loadWeekSessions()
+        }
+        .sheet(item: $editingSession) { session in
+            BackfillSheetView(
+                date: selectedDate,
+                categories: categories,
+                onAdd: { _, _, _, _ in },
+                onCancel: { editingSession = nil },
+                editingSession: session,
+                onSave: { updated in
+                    saveEditedSession(updated)
+                    editingSession = nil
+                },
+                onDelete: { session in
+                    deleteSession(session)
+                    editingSession = nil
+                }
+            )
         }
     }
 
@@ -138,6 +163,26 @@ struct SessionsTabView: View {
                 grouped[dayStart, default: []].append(session)
             }
             weekSessions = grouped
+        }
+    }
+
+    private func saveEditedSession(_ session: Session) {
+        sessionEngine.updateInToday(session)
+        Task {
+            if let syncEngine {
+                await syncEngine.updateSession(session)
+            }
+            loadWeekSessions()
+        }
+    }
+
+    private func deleteSession(_ session: Session) {
+        sessionEngine.removeFromToday(id: session.id)
+        Task {
+            if let syncEngine {
+                await syncEngine.deleteSession(id: session.id)
+            }
+            loadWeekSessions()
         }
     }
 }
