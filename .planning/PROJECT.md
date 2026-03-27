@@ -23,10 +23,12 @@ Users can quickly review, inspect, and manage their tracked sessions in a struct
 - ✓ Inline expand on click to show detailed app usage breakdown (app name + duration) — Phase 1
 - ✓ Sessions update live for today — Phase 1
 
+- ✓ Edit session category, intention, and time range — Phase 2
+- ✓ Delete session with confirmation — Phase 2
+
 ### Active
 
-- [ ] Edit session category, intention, and time range
-- [ ] Delete session with confirmation
+(All v1 requirements validated — milestone complete)
 
 ### Out of Scope
 
@@ -76,4 +78,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-27 after Phase 1 completion*
+*Last updated: 2026-03-27 after Phase 2 completion — all requirements validated, milestone complete*
