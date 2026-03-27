@@ -32,7 +32,12 @@ public final class CloudKitManager: Sendable {
         ]
         // CloudKit rejects empty arrays for new fields — only include if non-empty
         if !session.appsUsed.isEmpty {
-            fields["appsUsed"] = session.appsUsed
+            // New JSON format for full AppUsage (name + duration)
+            if let data = try? JSONEncoder().encode(session.appsUsed) {
+                fields["appsUsedData"] = data
+            }
+            // Legacy [String] field for backward compat with older clients
+            fields["appsUsed"] = session.appNames
         }
         if let endTime = session.endTime {
             fields["endTime"] = endTime
@@ -53,7 +58,16 @@ public final class CloudKitManager: Sendable {
         let category = fields["category"] as? String ?? ""
         let startTime = fields["startTime"] as? Date ?? Date()
         let endTime = fields["endTime"] as? Date
-        let appsUsed = fields["appsUsed"] as? [String] ?? []
+        // Try new JSON format first, fall back to legacy [String]
+        let appsUsed: [AppUsage]
+        if let data = fields["appsUsedData"] as? Data,
+           let decoded = try? JSONDecoder().decode([AppUsage].self, from: data) {
+            appsUsed = decoded
+        } else if let legacyApps = fields["appsUsed"] as? [String] {
+            appsUsed = legacyApps.map { AppUsage(appName: $0, duration: 0) }
+        } else {
+            appsUsed = []
+        }
         let intention = fields["intention"] as? String
         let trackingSpanIdString = fields["trackingSpanId"] as? String
         let trackingSpanId = trackingSpanIdString.flatMap { UUID(uuidString: $0) }

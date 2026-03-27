@@ -108,7 +108,7 @@ final class CalendarReader {
             category: title,
             startTime: event.startDate,
             endTime: event.endDate,
-            appsUsed: apps,
+            appsUsed: apps.map { AppUsage(appName: $0, duration: 0) },
             intention: intention,
             trackingSpanId: spanId,
             eventIdentifier: event.eventIdentifier

@@ -142,6 +142,9 @@ final class CalendarWriter {
         if let intention = session.intention, !intention.isEmpty {
             parts.append(intention)
         }
+        if !session.appsUsed.isEmpty {
+            parts.append("Apps: \(session.appNames.joined(separator: ", "))")
+        }
         if !session.distractions.isEmpty {
             // Group durations by app name
             var durations: [String: TimeInterval] = [:]

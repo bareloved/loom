@@ -11,7 +11,7 @@ struct CalendarNotesTests {
         let session = Session(
             category: "Coding",
             startTime: Date(),
-            appsUsed: ["Xcode", "Terminal", "Safari"],
+            appsUsed: [AppUsage(appName: "Xcode"), AppUsage(appName: "Terminal"), AppUsage(appName: "Safari")],
             intention: "Building auth flow"
         )
 
@@ -26,7 +26,7 @@ struct CalendarNotesTests {
         let session = Session(
             category: "Coding",
             startTime: Date(),
-            appsUsed: ["Xcode"]
+            appsUsed: [AppUsage(appName: "Xcode")]
         )
 
         let notes = CalendarWriter.buildHumanNotes(session: session)

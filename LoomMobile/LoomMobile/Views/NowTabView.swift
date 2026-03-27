@@ -64,8 +64,8 @@ struct NowTabView: View {
 
             if !session.appsUsed.isEmpty {
                 HStack(spacing: 6) {
-                    ForEach(session.appsUsed.prefix(5), id: \.self) { app in
-                        Text(app)
+                    ForEach(Array(session.appsUsed.prefix(5))) { appUsage in
+                        Text(appUsage.appName)
                             .font(.caption2)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 4)

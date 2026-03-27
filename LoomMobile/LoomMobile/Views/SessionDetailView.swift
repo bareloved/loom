@@ -47,8 +47,8 @@ struct SessionDetailView: View {
                                 .foregroundStyle(Theme.textTertiary)
 
                             FlowLayout(spacing: 6) {
-                                ForEach(session.appsUsed, id: \.self) { app in
-                                    Text(app)
+                                ForEach(session.appsUsed) { appUsage in
+                                    Text(appUsage.appName)
                                         .font(.caption)
                                         .padding(.horizontal, 10)
                                         .padding(.vertical, 5)

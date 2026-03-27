@@ -11,7 +11,7 @@ struct SyncRecordTests {
             category: "Coding",
             startTime: Date(),
             endTime: Date().addingTimeInterval(3600),
-            appsUsed: ["Xcode", "Terminal"],
+            appsUsed: [AppUsage(appName: "Xcode", duration: 300), AppUsage(appName: "Terminal", duration: 120)],
             intention: "Build feature",
             trackingSpanId: UUID(),
             eventIdentifier: "EK-123"
@@ -22,7 +22,8 @@ struct SyncRecordTests {
         #expect(fields["category"] as? String == "Coding")
         #expect(fields["intention"] as? String == "Build feature")
         #expect(fields["source"] as? String == "mac")
-        #expect((fields["appsUsed"] as? [String])?.count == 2)
+        #expect((fields["appsUsed"] as? [String])?.count == 2)  // legacy compat
+        #expect(fields["appsUsedData"] != nil)  // new JSON field
 
         let restored = CloudKitManager.sessionFromFields(
             id: session.id,

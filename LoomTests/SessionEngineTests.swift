@@ -46,7 +46,7 @@ struct SessionEngineTests {
             timestamp: Date()
         ))
 
-        #expect(engine.currentSession?.appsUsed.contains("Xcode") == true)
+        #expect(engine.currentSession?.appNames.contains("Xcode") == true)
     }
 
     @Test("process does nothing when not tracking")
@@ -73,7 +73,7 @@ struct SessionEngineTests {
         engine.process(ActivityRecord(bundleId: "com.apple.Terminal", appName: "Terminal", windowTitle: nil, timestamp: t.addingTimeInterval(5)))
         engine.process(ActivityRecord(bundleId: "com.apple.dt.Xcode", appName: "Xcode", windowTitle: nil, timestamp: t.addingTimeInterval(10)))
 
-        #expect(engine.currentSession?.appsUsed == ["Xcode", "Terminal"])
+        #expect(engine.currentSession?.appNames == ["Xcode", "Terminal"])
     }
 
     @Test("handleIdle finalizes session at idle time")
