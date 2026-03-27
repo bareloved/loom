@@ -5,7 +5,7 @@ public struct Session: Identifiable, Codable {
     public var category: String
     public let startTime: Date
     public var endTime: Date?
-    public var appsUsed: [String]
+    public var appsUsed: [AppUsage]
     public var intention: String?
     public var trackingSpanId: UUID?
     public var eventIdentifier: String?
@@ -17,7 +17,7 @@ public struct Session: Identifiable, Codable {
         category: String,
         startTime: Date,
         endTime: Date? = nil,
-        appsUsed: [String],
+        appsUsed: [AppUsage],
         intention: String? = nil,
         trackingSpanId: UUID? = nil,
         eventIdentifier: String? = nil,
@@ -41,17 +41,27 @@ public struct Session: Identifiable, Codable {
         return end.timeIntervalSince(startTime)
     }
 
+    public var appNames: [String] {
+        appsUsed.map(\.appName)
+    }
+
     public var primaryApp: String? {
-        appsUsed.first
+        appsUsed.first?.appName
     }
 
     public var isActive: Bool {
         endTime == nil
     }
 
-    public mutating func addApp(_ appName: String) {
-        if !appsUsed.contains(appName) {
-            appsUsed.append(appName)
+    public mutating func addOrUpdateApp(_ appName: String, elapsed: TimeInterval) {
+        if let index = appsUsed.firstIndex(where: { $0.appName == appName }) {
+            appsUsed[index].duration += elapsed
+        } else {
+            appsUsed.append(AppUsage(appName: appName, duration: elapsed))
         }
+    }
+
+    public mutating func addApp(_ appName: String) {
+        addOrUpdateApp(appName, elapsed: 0)
     }
 }

@@ -12,7 +12,7 @@ struct SessionTests {
             category: "Coding",
             startTime: start,
             endTime: start.addingTimeInterval(3600),
-            appsUsed: ["Xcode"]
+            appsUsed: [AppUsage(appName: "Xcode")]
         )
         #expect(session.duration == 3600)
     }
@@ -24,7 +24,7 @@ struct SessionTests {
             category: "Coding",
             startTime: start,
             endTime: nil,
-            appsUsed: ["Xcode"]
+            appsUsed: [AppUsage(appName: "Xcode")]
         )
         #expect(session.duration >= 119 && session.duration <= 121)
     }
@@ -35,10 +35,10 @@ struct SessionTests {
             category: "Coding",
             startTime: Date(),
             endTime: nil,
-            appsUsed: ["Xcode"]
+            appsUsed: [AppUsage(appName: "Xcode")]
         )
         session.addApp("Terminal")
-        #expect(session.appsUsed.contains("Terminal"))
+        #expect(session.appNames.contains("Terminal"))
         session.addApp("Xcode")
         #expect(session.appsUsed.count == 2)
     }
@@ -49,7 +49,7 @@ struct SessionTests {
             category: "Coding",
             startTime: Date(),
             endTime: nil,
-            appsUsed: ["Xcode", "Terminal"]
+            appsUsed: [AppUsage(appName: "Xcode"), AppUsage(appName: "Terminal")]
         )
         #expect(session.primaryApp == "Xcode")
     }
@@ -60,7 +60,7 @@ struct SessionTests {
         let session = Session(
             category: "Coding",
             startTime: Date(),
-            appsUsed: ["Xcode"],
+            appsUsed: [AppUsage(appName: "Xcode")],
             intention: "Build feature X",
             trackingSpanId: spanId
         )
@@ -73,7 +73,7 @@ struct SessionTests {
         let session = Session(
             category: "Coding",
             startTime: Date(),
-            appsUsed: ["Xcode"]
+            appsUsed: [AppUsage(appName: "Xcode")]
         )
         #expect(session.intention == nil)
         #expect(session.trackingSpanId == nil)
@@ -84,7 +84,7 @@ struct SessionTests {
         var session = Session(
             category: "Coding",
             startTime: Date(),
-            appsUsed: ["Xcode"]
+            appsUsed: [AppUsage(appName: "Xcode")]
         )
         session.category = "Email"
         #expect(session.category == "Email")
@@ -97,7 +97,7 @@ struct SessionTests {
             id: id,
             category: "Coding",
             startTime: Date(),
-            appsUsed: ["Xcode"]
+            appsUsed: [AppUsage(appName: "Xcode")]
         )
         #expect(session.id == id)
     }
