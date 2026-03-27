@@ -34,7 +34,7 @@ Base unit: 8px. All values are multiples of 4.
 | Token | Value | Usage |
 |-------|-------|-------|
 | xs | 4px | Icon-to-label gaps, color strip width, dot indicators |
-| sm | 8px | Intra-card element spacing, WeekStrip day cell vertical padding |
+| sm | 8px | Intra-card element spacing, WeekStrip day cell vertical padding, card vertical padding |
 | md | 16px | Card horizontal padding, section horizontal padding |
 | lg | 24px | Section vertical padding, list outer padding |
 | xl | 32px | — (not used in this phase) |
@@ -46,7 +46,7 @@ Exceptions:
 - Card corner radius: 10px (design system "cards/goal" token)
 - Week navigation bar vertical padding: 8px top/bottom, 16px horizontal (matches CalendarTabView pattern)
 - WeekStrip day cell corner radius: 8px (matches WeekStripView existing implementation)
-- Card vertical padding: 10px top/bottom (derived from 8px base with 2px accent for density)
+- Card vertical padding: 8px top/bottom
 - Gap between session cards: 8px
 
 Source: `.design-engineer/system.md`, `CalendarTabView.swift`, `WeekStripView.swift`.
@@ -59,13 +59,14 @@ All sizes use `.system` font (San Francisco). Weights: regular (400) and semibol
 
 | Role | Size | Weight | Line Height | Color Token | Usage |
 |------|------|--------|-------------|-------------|-------|
-| Section label | 9px | semibold (600) | 1.0 | `Theme.textQuaternary` | "MON", "TUE" day labels in WeekStrip; uppercase, 0.5px letter-spacing |
-| Label | 10px | regular (400) | 1.2 | `Theme.textTertiary` | Daily hour totals in WeekStrip (e.g. "3.2h"), time range on session card, app name in expanded detail |
+| Small label | 10px | semibold (600) | 1.0 | `Theme.textQuaternary` | "MON", "TUE" day labels in WeekStrip (uppercase, 0.5px letter-spacing) and daily hour totals (e.g. "3.2h"), time range on session card, app name + duration in expanded detail |
 | Body | 13px | regular (400) | 1.4 | `Theme.textSecondary` | Intention text on session card; muted placeholder when no intention |
-| Heading | 13px | semibold (600) | 1.2 | `Theme.textPrimary` | Category name on session card (top line, left) |
-| Duration badge | 12px | semibold (600) | 1.0 | `Theme.textSecondary` | Duration on session card top line, right-aligned (e.g. "45m") |
+| Heading | 13px | semibold (600) | 1.2 | `Theme.textPrimary` | Category name on session card (top line, left); duration badge right-aligned (e.g. "45m") |
 | Day date number | 16px | regular (400) | 1.0 | `Theme.textPrimary` / `CategoryColors.accent` | Day-of-month number in WeekStrip |
-| Empty state | 13px | regular (400) | 1.4 | `Theme.textTertiary` | "No sessions" centered text |
+
+Typography note: day labels and hour totals in WeekStrip both serve small auxiliary roles at the same 10px size — day labels use semibold 600 for uppercase abbreviations, hour totals use regular 400 for numeric readout. Duration badge on session cards uses 13px semibold (merged into the Heading role) to maintain the 2-weight constraint while preserving visual alignment with the category name on the same row.
+
+Primary focal point: the session card list; within each card, the category name line (top-left, 13px semibold) is the primary visual anchor.
 
 Source: `WeekStripView.swift` (sizes 10, 16 confirmed), `.design-engineer/system.md` (section label spec), `TodayTabView.swift` (14px body precedent — 13px used here for denser card rows).
 
@@ -113,9 +114,9 @@ VStack(spacing: 0)
 ### WeekNavigationBar (inline in SessionsTabView)
 
 Reuse the exact HStack pattern from `CalendarTabView` body:
-- Left: `chevron.left` plain button — shifts week back
+- Left: `chevron.left` plain button — shifts week back — `.accessibilityLabel("Previous week")`
 - Center: "Today" plain button in `CategoryColors.accent`
-- Right: `chevron.right` plain button — shifts week forward
+- Right: `chevron.right` plain button — shifts week forward — `.accessibilityLabel("Next week")`
 - No calendar filter menu (that is Calendar-tab-specific)
 - Horizontal padding: 16px, vertical padding: 8px
 
@@ -130,13 +131,15 @@ Card anatomy (left to right, top to bottom):
 ```
 HStack(spacing: 0)
   Rectangle (color strip)    3px wide, full card height, category color, cornerRadius on leading edge only
-  VStack(spacing: 4)         horizontal padding: 12px left, 12px right; vertical padding: 10px
+  VStack(spacing: 4)         horizontal padding: 16px left, 16px right; vertical padding: 8px
     HStack
+      Circle (live dot)      4px, CategoryColors.accent, visible only for in-progress session
+                             .accessibilityLabel("In progress")
       Text(category)         13px semibold, Theme.textPrimary
       Spacer
-      Text(duration)         12px semibold, Theme.textSecondary  e.g. "45m"
+      Text(duration)         13px semibold, Theme.textPrimary  e.g. "45m"
     Text(intention)          13px regular, Theme.textSecondary (if nil: "No intention" in Theme.textQuaternary)
-    Text(timeRange)          10px regular, Theme.textTertiary  e.g. "09:15 – 10:00"
+    Text(timeRange)          10px regular, Theme.textQuaternary  e.g. "09:15 – 10:00"
     if expanded:
       Divider                Theme.border, top margin 6px
       AppUsageListView
@@ -149,9 +152,6 @@ Card container:
 - No shadow (depth strategy: borders only per design system)
 - `.contentShape(Rectangle())` for full hit area
 - Tap gesture toggles `expandedSessionId` (accordion: sets to this id, or nil if already expanded)
-
-Live session indicator:
-- Today's in-progress (currentSession): add a 4px terracotta dot left of the category name, same row
 
 ### AppUsageListView (new, shown inside expanded card)
 
@@ -166,7 +166,7 @@ VStack(spacing: 4)
       Text(duration)        10px semibold, Theme.textTertiary  e.g. "45m"
 ```
 
-Padding: 0px — inherits card's 12px horizontal padding. Top padding: 6px above first row (after divider).
+Padding: 0px — inherits card's 16px horizontal padding. Top padding: 6px above first row (after divider).
 
 ### EmptyStateView (new, inline in SessionsTabView)
 
@@ -231,14 +231,18 @@ Tab bar renders `Sessions` between Today and Calendar.
 | Week navigation — today button | "Today" |
 | Empty state | "No sessions" |
 | No intention placeholder | "No intention" |
-| In-progress session label | (no text label — indicated by terracotta dot only) |
+| In-progress session label | (no text label — indicated by terracotta dot only, with accessibility label "In progress") |
 | Error state (load failure) | "Couldn't load sessions" |
+| Error state subtext | "Pull to refresh or check your connection" |
 | Section header (none declared) | No section headers in this phase |
+| Chevron left accessibility label | "Previous week" |
+| Chevron right accessibility label | "Next week" |
 
 Notes:
 - "No sessions" is the complete empty state — no subtext, no call to action (D-06: minimal, no illustrations or hints)
 - "No intention" renders in `Theme.textQuaternary` (most muted text token) to signal it is a placeholder, not content
 - Duration formatting: use shortest form — "45m" for under 1 hour, "1h 12m" for 1+ hours, "2h" if exactly on the hour
+- Error subtext renders at 10px regular `Theme.textQuaternary`, below the primary error string
 
 ---
 
