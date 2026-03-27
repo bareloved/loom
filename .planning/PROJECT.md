@@ -16,17 +16,17 @@ Users can quickly review, inspect, and manage their tracked sessions in a struct
 - ✓ Session data model with category, intention, time range, apps used, distractions — existing
 - ✓ CloudKit-backed session storage with edit/delete support — existing
 - ✓ Category configuration and color system — existing
+- ✓ Sessions tab added to main window tab bar — Phase 1
+- ✓ Week navigation bar with day-of-week strip — Phase 1
+- ✓ Session list showing all sessions for the selected day — Phase 1
+- ✓ Each session row displays category, intention, time range, and duration — Phase 1
+- ✓ Inline expand on click to show detailed app usage breakdown (app name + duration) — Phase 1
+- ✓ Sessions update live for today — Phase 1
 
 ### Active
 
-- [ ] Sessions tab added to main window tab bar
-- [ ] Week navigation bar with day-of-week strip (reuse pattern from CalendarTabView)
-- [ ] Session list showing all sessions for the selected day
-- [ ] Each session row displays category, intention, time range, and duration
-- [ ] Inline expand on click to show detailed app usage breakdown (app name + duration)
 - [ ] Edit session category, intention, and time range
 - [ ] Delete session with confirmation
-- [ ] Sessions update live for today (merge engine state like CalendarTabView does)
 
 ### Out of Scope
 
@@ -76,4 +76,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-27 after initialization*
+*Last updated: 2026-03-27 after Phase 1 completion*
