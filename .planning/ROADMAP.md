@@ -30,7 +30,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans:** 2 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Migrate Session.appsUsed from [String] to [AppUsage] with per-app duration tracking
+- [x] 01-01-PLAN.md — Migrate Session.appsUsed from [String] to [AppUsage] with per-app duration tracking
 - [ ] 01-02-PLAN.md — Sessions tab with week navigation, session card list, inline expansion, and live today merge
 
 **UI hint**: yes

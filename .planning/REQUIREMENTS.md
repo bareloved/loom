@@ -21,7 +21,7 @@
 ### Detail Expansion
 
 - [ ] **DETAIL-01**: Clicking a session row expands it inline to show app usage breakdown
-- [ ] **DETAIL-02**: Expanded view shows each app name and time spent in that app
+- [x] **DETAIL-02**: Expanded view shows each app name and time spent in that app
 - [ ] **DETAIL-03**: Only one session expanded at a time (accordion behavior)
 
 ### Edit & Delete
@@ -61,7 +61,7 @@
 | LIST-03 | Phase 1 | Pending |
 | LIST-04 | Phase 1 | Pending |
 | DETAIL-01 | Phase 1 | Pending |
-| DETAIL-02 | Phase 1 | Pending |
+| DETAIL-02 | Phase 1 | Complete |
 | DETAIL-03 | Phase 1 | Pending |
 | EDIT-01 | Phase 2 | Pending |
 | EDIT-02 | Phase 2 | Pending |
