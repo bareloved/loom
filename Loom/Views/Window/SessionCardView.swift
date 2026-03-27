@@ -3,6 +3,11 @@ import SwiftUI
 struct SessionCardView: View {
     let session: Session
     let isExpanded: Bool
+    var onEdit: ((Session) -> Void)? = nil
+    var onDelete: ((Session) -> Void)? = nil
+    var onConfirmDelete: ((Session) -> Void)? = nil
+
+    @State private var showDeleteConfirmation = false
 
     var body: some View {
         HStack(spacing: 0) {
@@ -20,6 +25,29 @@ struct SessionCardView: View {
                 )
 
             // Card content
+            if showDeleteConfirmation {
+                // Inline confirmation — card transforms in-place
+                HStack {
+                    Text("Delete this session?")
+                        .font(.system(size: 13))
+                        .foregroundStyle(Theme.textSecondary)
+                    Spacer()
+                    Button("Cancel") {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            showDeleteConfirmation = false
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(Theme.textSecondary)
+                    Button("Delete") {
+                        onConfirmDelete?(session)
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(.red)
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 12)
+            } else {
             VStack(alignment: .leading, spacing: 4) {
                 // Top line: [live dot] category name ... duration (right-aligned)
                 HStack(spacing: 4) {
@@ -74,6 +102,7 @@ struct SessionCardView: View {
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 8)
+            } // end else (showDeleteConfirmation)
         }
         .background(Theme.backgroundSecondary)
         .clipShape(RoundedRectangle(cornerRadius: 10))
@@ -82,6 +111,19 @@ struct SessionCardView: View {
                 .stroke(Theme.border, lineWidth: 0.5)
         )
         .contentShape(Rectangle())
+        .onTapGesture(count: 2) {
+            onEdit?(session)
+        }
+        .contextMenu {
+            Button("Edit") {
+                onEdit?(session)
+            }
+            Button("Delete", role: .destructive) {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    showDeleteConfirmation = true
+                }
+            }
+        }
     }
 
     // Duration formatting — "45m", "1h 12m", "2h"
