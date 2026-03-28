@@ -96,7 +96,7 @@ struct SessionCardView: View {
                         .foregroundStyle(Theme.border)
                         .padding(.top, 6)
 
-                    AppUsageListView(appsUsed: session.appsUsed)
+                    AppUsageBarView(appsUsed: session.appsUsed, totalDuration: session.duration)
                         .padding(.top, 6)
                 }
             }
