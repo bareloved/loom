@@ -109,20 +109,19 @@ struct AppUsageBarView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             // Stacked bar
-            HStack(spacing: 1) {
-                ForEach(Array(items.enumerated()), id: \.offset) { _, item in
-                    RoundedRectangle(cornerRadius: 3)
-                        .fill(item.color)
-                        .frame(minWidth: 4)
-                        .frame(
-                            idealWidth: CGFloat(item.proportion * 300),
-                            maxWidth: .infinity
-                        )
+            GeometryReader { geo in
+                let totalGaps = CGFloat(max(items.count - 1, 0)) * 1
+                let barWidth = geo.size.width - totalGaps
+                HStack(spacing: 1) {
+                    ForEach(Array(items.enumerated()), id: \.offset) { _, item in
+                        RoundedRectangle(cornerRadius: 3)
+                            .fill(item.color)
+                            .frame(width: max(4, barWidth * CGFloat(item.proportion)))
+                    }
                 }
+                .clipShape(RoundedRectangle(cornerRadius: 4))
             }
             .frame(height: 20)
-            .frame(maxWidth: .infinity)
-            .clipShape(RoundedRectangle(cornerRadius: 4))
 
             // Legend
             FlowLayout(spacing: 12) {
