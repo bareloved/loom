@@ -5,11 +5,9 @@ import UniformTypeIdentifiers
 enum SettingsSection: String, CaseIterable, Identifiable {
     case general = "General"
     case focusGuard = "Focus Guard"
-    case notification = "Notification"
     case calendar = "Calendar"
     case category = "Category"
     case window = "Window"
-    case browser = "Browser Tracking"
 
     var id: String { rawValue }
 
@@ -17,11 +15,9 @@ enum SettingsSection: String, CaseIterable, Identifiable {
         switch self {
         case .general: return "gearshape"
         case .focusGuard: return "eye.trianglebadge.exclamationmark"
-        case .notification: return "bell"
         case .calendar: return "calendar"
         case .category: return "tag"
         case .window: return "macwindow"
-        case .browser: return "globe"
         }
     }
 }
@@ -120,14 +116,10 @@ struct SettingsTabView: View {
                                 generalSection
                             case .focusGuard:
                                 focusGuardSection
-                            case .notification:
-                                placeholderSection("Notification settings coming soon.")
                             case .calendar:
                                 calendarSection
                             case .window:
                                 windowSection
-                            case .browser:
-                                placeholderSection("Browser tracking settings coming soon.")
                             default:
                                 EmptyView()
                             }

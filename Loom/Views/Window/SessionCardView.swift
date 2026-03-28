@@ -59,16 +59,16 @@ struct SessionCardView: View {
                             .accessibilityLabel("In progress")
                     }
 
-                    // Category name — 13px semibold, Theme.textPrimary
+                    // Category name — 15px semibold, Theme.textPrimary
                     Text(session.category)
-                        .font(.system(size: 13, weight: .semibold))
+                        .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(Theme.textPrimary)
 
                     Spacer()
 
-                    // Duration — 13px semibold, Theme.textPrimary, e.g. "45m"
+                    // Duration — 15px semibold, Theme.textPrimary, e.g. "45m"
                     Text(formatDuration(session.duration))
-                        .font(.system(size: 13, weight: .semibold))
+                        .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(Theme.textPrimary)
                 }
 

@@ -58,7 +58,13 @@ struct LaunchPopupView: View {
 
             // Intention field
             TextField("What are you working on? (optional)", text: $intention)
-                .textFieldStyle(.roundedBorder)
+                .textFieldStyle(.plain)
+                .font(.system(size: 13))
+                .padding(.horizontal, 10)
+                .padding(.vertical, 10)
+                .background(Theme.backgroundSecondary)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Theme.border))
                 .onSubmit { startSession() }
 
             Button(action: startSession) {

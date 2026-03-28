@@ -70,8 +70,8 @@ public enum Theme {
 
     public static let textPrimary = Color(light: Color(hex: 0x1a1a1a), dark: Color(hex: 0xf0ede8))
     public static let textSecondary = Color(light: Color(hex: 0x3a3a3a), dark: Color(hex: 0xc8c3bb))
-    public static let textTertiary = Color(light: Color(hex: 0x9a958e), dark: Color(hex: 0x6b665f))
-    public static let textQuaternary = Color(light: Color(hex: 0xb5b0a8), dark: Color(hex: 0x4a4540))
+    public static let textTertiary = Color(light: Color(hex: 0x9a958e), dark: Color(hex: 0x8a857e))
+    public static let textQuaternary = Color(light: Color(hex: 0xb5b0a8), dark: Color(hex: 0x726d66))
 
     public static let trackFill = Color(light: Color.black.opacity(0.04), dark: Color.white.opacity(0.04))
     public static let idleSegment = Color(light: Color(hex: 0xddd9d3).opacity(0.5), dark: Color(hex: 0x363330).opacity(0.5))

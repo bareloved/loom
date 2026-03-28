@@ -131,11 +131,11 @@ struct AppUsageBarView: View {
                             .fill(item.color)
                             .frame(width: 8, height: 8)
                         Text(item.label)
-                            .font(.system(size: 11))
+                            .font(.system(size: 13))
                             .foregroundStyle(Theme.textSecondary)
                         if hasAnyDuration {
                             Text(formatDuration(item.duration))
-                                .font(.system(size: 11, weight: .semibold))
+                                .font(.system(size: 13, weight: .semibold))
                                 .foregroundStyle(Theme.textTertiary)
                         }
                     }
