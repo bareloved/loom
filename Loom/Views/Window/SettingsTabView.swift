@@ -1,10 +1,12 @@
 import SwiftUI
 import ServiceManagement
 import UniformTypeIdentifiers
+import UserNotifications
 
 enum SettingsSection: String, CaseIterable, Identifiable {
     case general = "General"
     case focusGuard = "Focus Guard"
+    case notification = "Notification"
     case calendar = "Calendar"
     case category = "Category"
     case window = "Window"
@@ -15,6 +17,7 @@ enum SettingsSection: String, CaseIterable, Identifiable {
         switch self {
         case .general: return "gearshape"
         case .focusGuard: return "eye.trianglebadge.exclamationmark"
+        case .notification: return "bell.badge"
         case .calendar: return "calendar"
         case .category: return "tag"
         case .window: return "macwindow"
@@ -43,6 +46,11 @@ struct SettingsTabView: View {
     @AppStorage("focusGuardEnabled") private var focusGuardEnabled = true
     @AppStorage("focusThreshold") private var focusThreshold: Double = 30
     @AppStorage("snoozeDuration") private var snoozeDuration: Double = 300
+    @AppStorage("reminderEnabled") private var reminderEnabled = false
+    @AppStorage("reminderHour") private var reminderHour = 8
+    @AppStorage("reminderMinute") private var reminderMinute = 30
+    @AppStorage("reminderDays") private var reminderDays = "2,3,4,5,6"
+    @State private var reminderTime = Calendar.current.date(from: DateComponents(hour: 8, minute: 30)) ?? Date()
 
     let calendarWriter: CalendarWriter
     let appState: AppState
@@ -116,6 +124,8 @@ struct SettingsTabView: View {
                                 generalSection
                             case .focusGuard:
                                 focusGuardSection
+                            case .notification:
+                                notificationSection
                             case .calendar:
                                 calendarSection
                             case .window:
@@ -636,6 +646,146 @@ struct SettingsTabView: View {
             .tint(CategoryColors.accent)
         }
     }
+
+    // MARK: - Notification
+
+    @ViewBuilder
+    private var notificationSection: some View {
+        Text("Notification")
+            .font(.system(size: 20, weight: .semibold))
+            .foregroundStyle(Theme.textPrimary)
+
+        settingsCard("Daily Reminder") {
+            VStack(spacing: 10) {
+                HStack {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Daily Reminder")
+                            .foregroundStyle(Theme.textPrimary)
+                        Text("Remind me to start a focus session")
+                            .font(.system(size: 11))
+                            .foregroundStyle(Theme.textTertiary)
+                    }
+                    Spacer()
+                    Toggle("", isOn: $reminderEnabled)
+                        .toggleStyle(.switch)
+                        .tint(CategoryColors.accent)
+                        .labelsHidden()
+                        .onChange(of: reminderEnabled) { _, enabled in
+                            if enabled {
+                                Task {
+                                    let granted = await appState.reminderManager?.requestAuthorization() ?? false
+                                    if !granted {
+                                        reminderEnabled = false
+                                    }
+                                }
+                                appState.reminderManager?.rescheduleAll(
+                                    hour: reminderHour,
+                                    minute: reminderMinute,
+                                    days: enabledDays
+                                )
+                            } else {
+                                appState.reminderManager?.removeAll()
+                            }
+                        }
+                }
+
+                if reminderEnabled {
+                    Divider()
+
+                    HStack {
+                        Text("Remind at")
+                            .foregroundStyle(Theme.textPrimary)
+                        Spacer()
+                        DatePicker("", selection: $reminderTime, displayedComponents: .hourAndMinute)
+                            .labelsHidden()
+                            .onChange(of: reminderTime) { _, newTime in
+                                let components = Calendar.current.dateComponents([.hour, .minute], from: newTime)
+                                reminderHour = components.hour ?? 8
+                                reminderMinute = components.minute ?? 30
+                                appState.reminderManager?.rescheduleAll(
+                                    hour: reminderHour,
+                                    minute: reminderMinute,
+                                    days: enabledDays
+                                )
+                            }
+                    }
+                }
+            }
+        }
+        .onAppear {
+            reminderTime = Calendar.current.date(from: DateComponents(hour: reminderHour, minute: reminderMinute)) ?? Date()
+        }
+
+        if reminderEnabled {
+            settingsCard("Active Days") {
+                VStack(spacing: 0) {
+                    ForEach(Array(Self.orderedDays.enumerated()), id: \.element.weekday) { index, day in
+                        if index > 0 {
+                            Divider()
+                        }
+                        HStack {
+                            Text(day.name)
+                                .font(.system(size: 13))
+                                .foregroundStyle(isDayEnabled(day.weekday) ? Theme.textPrimary : Theme.textSecondary)
+                            Spacer()
+                            Toggle("", isOn: Binding(
+                                get: { isDayEnabled(day.weekday) },
+                                set: { _ in toggleDay(day.weekday) }
+                            ))
+                            .toggleStyle(.switch)
+                            .tint(CategoryColors.accent)
+                            .labelsHidden()
+                        }
+                        .padding(.vertical, 4)
+                    }
+                }
+            }
+        }
+
+        if reminderEnabled, !(appState.reminderManager?.isAuthorized ?? false) {
+            settingsCard("Status") {
+                HStack(spacing: 8) {
+                    Circle()
+                        .fill(CategoryColors.accent)
+                        .frame(width: 8, height: 8)
+                    Text("Enable notifications in System Settings > Notifications > Loom")
+                        .font(.system(size: 12))
+                        .foregroundStyle(Theme.textSecondary)
+                }
+            }
+        }
+    }
+
+    // MARK: - Reminder Helpers
+
+    private var enabledDays: Set<Int> {
+        Set(reminderDays.split(separator: ",").compactMap { Int($0) })
+    }
+
+    private func toggleDay(_ weekday: Int) {
+        var days = enabledDays
+        if days.contains(weekday) {
+            days.remove(weekday)
+        } else {
+            days.insert(weekday)
+        }
+        reminderDays = days.sorted().map(String.init).joined(separator: ",")
+        appState.reminderManager?.rescheduleAll(hour: reminderHour, minute: reminderMinute, days: days)
+    }
+
+    private func isDayEnabled(_ weekday: Int) -> Bool {
+        enabledDays.contains(weekday)
+    }
+
+    private static let orderedDays: [(name: String, weekday: Int)] = [
+        ("Monday", 2),
+        ("Tuesday", 3),
+        ("Wednesday", 4),
+        ("Thursday", 5),
+        ("Friday", 6),
+        ("Saturday", 7),
+        ("Sunday", 1),
+    ]
 
     // MARK: - Placeholder
 
