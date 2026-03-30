@@ -87,9 +87,11 @@ struct SessionsTabView: View {
                 Spacer()
             } else if selectedDaySessions.isEmpty {
                 Spacer()
-                Text("No sessions")
-                    .font(.system(size: 13))
-                    .foregroundStyle(Theme.textTertiary)
+                EmptyStateView(
+                    icon: "list.bullet.rectangle",
+                    title: "No sessions",
+                    subtitle: "Sessions you track will appear here"
+                )
                 Spacer()
             } else {
                 ScrollView(.vertical) {

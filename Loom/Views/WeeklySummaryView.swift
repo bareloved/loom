@@ -47,9 +47,7 @@ struct WeeklySummaryView: View {
             }
 
             if summaries.isEmpty {
-                Text("No data for this week yet")
-                    .font(.callout)
-                    .foregroundStyle(.tertiary)
+                EmptyStateView(title: "No data this week")
             }
         }
     }

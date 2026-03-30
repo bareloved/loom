@@ -34,9 +34,7 @@ struct DailySummaryView: View {
             }
 
             if summaries.isEmpty {
-                Text("No activity tracked yet")
-                    .font(.callout)
-                    .foregroundStyle(.tertiary)
+                EmptyStateView(title: "No activity today")
             }
         }
     }
