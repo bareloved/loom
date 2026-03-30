@@ -53,6 +53,13 @@ struct MenuBarIcon: Identifiable, Equatable {
     }
 }
 
+enum MenuBarState {
+    case tracking
+    case stoppedIdle
+    case stoppedSleep
+    case inactive
+}
+
 @Observable
 @MainActor
 final class AppState {
@@ -79,6 +86,8 @@ final class AppState {
     var menuBarIconName: String = UserDefaults.standard.string(forKey: "menuBarIcon") ?? "Clock"
     var menuBarTitle: String = ""
     var menuBarIconSystemName: String = "clock"
+    var menuBarState: MenuBarState = .inactive
+    var syncError: Bool = false
     private var menuBarTimer: Timer?
 
     func setup() async {
@@ -134,6 +143,8 @@ final class AppState {
             }
             engine?.handleIdle(at: Date())
             guard_?.reset()
+            self?.menuBarState = .stoppedIdle
+            self?.toastManager.show(.warning, message: "Session stopped due to inactivity")
             if let category {
                 self?.reminderManager?.notifySessionStoppedDueToIdle(category: category)
             }
@@ -198,6 +209,8 @@ final class AppState {
     // MARK: - Start/Stop Tracking
 
     func startTracking(category: String, intention: String? = nil) {
+        menuBarState = .tracking
+        syncError = false
         focusGuard?.reset()
         sessionEngine?.startSession(category: category, intention: intention)
         activityMonitor.start()
@@ -221,6 +234,8 @@ final class AppState {
         focusGuard?.reset()
         sessionEngine?.stopSession()
         activityMonitor.stop()
+        toastManager.show(.success, message: "Session saved")
+        menuBarState = .inactive
     }
 
     // MARK: - Remote Session Polling
@@ -307,7 +322,11 @@ final class AppState {
 
                     if sleepDuration >= 300 {
                         // Long sleep — end session and show idle return panel
+                        let category = engine.currentSession?.category ?? "Unknown"
                         engine.handleIdle(at: slept)
+                        self.menuBarState = .stoppedSleep
+                        self.reminderManager?.notifySessionStoppedDueToSleep(category: category)
+                        self.toastManager.show(.warning, message: "Session stopped — Mac went to sleep")
                         self.activityMonitor.markIdle()
                         self.activityMonitor.resume()
                     } else {
@@ -458,33 +477,38 @@ final class AppState {
 
     private func updateMenuBarTitle() {
         let icon = MenuBarIcon.named(menuBarIconName)
-        let isActive = sessionEngine?.isTracking == true && !activityMonitor.isPaused
-        menuBarIconSystemName = isActive ? icon.activeIcon : icon.idleIcon
 
-        guard showMenuBarText else {
+        // Icon fill based on state
+        switch menuBarState {
+        case .tracking:
+            menuBarIconSystemName = icon.activeIcon
+        case .stoppedIdle, .stoppedSleep, .inactive:
+            menuBarIconSystemName = icon.idleIcon
+        }
+
+        // Text based on state
+        switch menuBarState {
+        case .tracking:
+            if activityMonitor.isPaused {
+                menuBarTitle = showMenuBarText ? "Paused" : ""
+                return
+            }
+            guard showMenuBarText, let session = sessionEngine?.currentSession else {
+                menuBarTitle = ""
+                return
+            }
+            let duration = Date().timeIntervalSince(session.startTime)
+            let hours = Int(duration) / 3600
+            let minutes = (Int(duration) % 3600) / 60
+            let timeStr = "\(hours):\(String(format: "%02d", minutes)) \(session.category)"
+            menuBarTitle = syncError ? "\(timeStr) ⚠" : timeStr
+        case .stoppedIdle:
+            menuBarTitle = showMenuBarText ? "Stopped (idle)" : ""
+        case .stoppedSleep:
+            menuBarTitle = showMenuBarText ? "Stopped (sleep)" : ""
+        case .inactive:
             menuBarTitle = ""
-
-            return
         }
-        guard let engine = sessionEngine, engine.isTracking else {
-            menuBarTitle = ""
-
-            return
-        }
-        if activityMonitor.isPaused {
-            menuBarTitle = "Paused"
-
-            return
-        }
-        guard let session = engine.currentSession else {
-            menuBarTitle = ""
-
-            return
-        }
-        let duration = Date().timeIntervalSince(session.startTime)
-        let hours = Int(duration) / 3600
-        let minutes = (Int(duration) % 3600) / 60
-        menuBarTitle = "\(hours):\(String(format: "%02d", minutes)) \(session.category)"
     }
 
     private func createIdleEvent(label: String, duration: TimeInterval) {

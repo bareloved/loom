@@ -119,6 +119,92 @@ final class ReminderManager: NSObject, UNUserNotificationCenterDelegate {
         }
     }
 
+    func notifySessionStoppedDueToSleep(category: String) {
+        guard isAuthorized else { return }
+
+        let content = UNMutableNotificationContent()
+        content.title = "Session stopped"
+        content.body = "Your \(category) session was stopped — Mac went to sleep"
+        content.sound = .default
+        content.categoryIdentifier = "SESSION_REMINDER"
+
+        let request = UNNotificationRequest(
+            identifier: "loom-sleep-stop-\(UUID().uuidString)",
+            content: content,
+            trigger: nil
+        )
+
+        center.add(request) { error in
+            if let error {
+                print("Failed to send sleep stop notification: \(error)")
+            }
+        }
+    }
+
+    func notifyCalendarWriteFailed() {
+        guard isAuthorized else { return }
+
+        let content = UNMutableNotificationContent()
+        content.title = "Session not saved"
+        content.body = "Couldn't save your session to calendar"
+        content.sound = .default
+        content.categoryIdentifier = "SESSION_REMINDER"
+
+        let request = UNNotificationRequest(
+            identifier: "loom-cal-fail-\(UUID().uuidString)",
+            content: content,
+            trigger: nil
+        )
+
+        center.add(request) { error in
+            if let error {
+                print("Failed to send calendar failure notification: \(error)")
+            }
+        }
+    }
+
+    func notifySyncFailed() {
+        guard isAuthorized else { return }
+
+        let content = UNMutableNotificationContent()
+        content.title = "Sync issue"
+        content.body = "Couldn't sync your session — check your connection"
+        content.categoryIdentifier = "SESSION_REMINDER"
+
+        let request = UNNotificationRequest(
+            identifier: "loom-sync-fail-\(UUID().uuidString)",
+            content: content,
+            trigger: nil
+        )
+
+        center.add(request) { error in
+            if let error {
+                print("Failed to send sync failure notification: \(error)")
+            }
+        }
+    }
+
+    func notifyRemoteSessionStarted(category: String) {
+        guard isAuthorized else { return }
+
+        let content = UNMutableNotificationContent()
+        content.title = "Tracking from another device"
+        content.body = "A \(category) session started from iPhone — now tracking on Mac"
+        content.categoryIdentifier = "SESSION_REMINDER"
+
+        let request = UNNotificationRequest(
+            identifier: "loom-remote-start-\(UUID().uuidString)",
+            content: content,
+            trigger: nil
+        )
+
+        center.add(request) { error in
+            if let error {
+                print("Failed to send remote session notification: \(error)")
+            }
+        }
+    }
+
     // MARK: - UNUserNotificationCenterDelegate
 
     nonisolated func userNotificationCenter(
